@@ -3,7 +3,24 @@ import SearchBox from "../common/SearchBox";
 import { Link } from "react-router";
 import useMediaQuery from "../hooks/useMediaQuery";
 
-function TopBar() {
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
+import { Button } from "@/components/ui/button";
+import { products } from "@/utils/products";
+import CartItem from "./cart/CartItem";
+
+interface TopBarProps {
+  toggleCart(): void;
+}
+
+function TopBar({ toggleCart }: TopBarProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
@@ -16,7 +33,7 @@ function TopBar() {
             </Link>
             <SearchBox />
             <div className="flex items-center gap-4">
-              <ShoppingCart />
+              <ShoppingCart onClick={toggleCart} className="cursor-pointer" />
               <UserCircle />
             </div>
           </div>
@@ -28,7 +45,34 @@ function TopBar() {
               SHOPNEST
             </Link>
             <div className="flex items-center gap-4">
-              <ShoppingCart />
+              <Drawer>
+                <DrawerTrigger>
+                  <ShoppingCart
+                    onClick={toggleCart}
+                    className="cursor-pointer"
+                  />
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>YOUR CARTS</DrawerTitle>
+                  </DrawerHeader>
+                  <div className="max-h-[300px] mx-6 overflow-scroll scrollbar-hide">
+                    {products.map((product, index) => (
+                      <CartItem
+                        key={index}
+                        name={product.name}
+                        image={product.images[0].url}
+                        size={product.size[0]}
+                        color={product.colors[0]}
+                        price={product.price}
+                      />
+                    ))}
+                  </div>
+                  <DrawerFooter>
+                    <Button className="primary-bg">Go to Checkout</Button>
+                  </DrawerFooter>
+                </DrawerContent>
+              </Drawer>
               <UserCircle />
             </div>
           </div>

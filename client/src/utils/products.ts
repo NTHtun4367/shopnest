@@ -1,7 +1,4 @@
-import useMediaQuery from "../../hooks/useMediaQuery";
-import ProductCard from "./ProductCard";
-
-const products = [
+export const products = [
   {
     id: 1,
     name: "Black T-Shirt",
@@ -88,27 +85,3 @@ const products = [
     ],
   },
 ];
-
-function ProductList() {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  const gridMedia = isDesktop
-    ? "grid grid-cols-5 gap-6"
-    : "grid grid-cols-2 mx-6 gap-2";
-
-  return (
-    <main className={gridMedia}>
-      {products.map((product, index) => (
-        <ProductCard
-          key={index}
-          name={product.name}
-          image={product.images[0].url}
-          price={product.price}
-          ratingCount={product.rating}
-        />
-      ))}
-    </main>
-  );
-}
-
-export default ProductList;
