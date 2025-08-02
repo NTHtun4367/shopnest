@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./db/dbConnect";
+import userRoutes from "./routes/user";
+import errorHandler from "./middlewares/errorHandler";
 
 dotenv.config({
   path: ".env",
@@ -20,6 +22,10 @@ app.use(json());
 app.use(cookieParser());
 
 // routes
+app.use("/api", userRoutes);
+
+// errorHandler
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 
