@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./db/dbConnect";
 import userRoutes from "./routes/user";
+import productRoutes from "./routes/product";
 import errorHandler from "./middlewares/errorHandler";
 
 dotenv.config({
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 // routes
 app.use("/api", userRoutes);
+app.use("/api", productRoutes);
 
 // errorHandler
 app.use(errorHandler);
