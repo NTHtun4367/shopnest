@@ -15,18 +15,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { products } from "@/utils/products";
 import CartItem from "./cart/CartItem";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
 
 interface TopBarProps {
   toggleCart(): void;
 }
 
 function TopBar({ toggleCart }: TopBarProps) {
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
     <>
       {isDesktop ? (
-        <nav className="primary-bg text-white py-5">
+        <nav className="bg-primary text-white py-5">
           <div className="flex items-center justify-between max-w-6xl mx-auto">
             <Link to={"/"} className="text-3xl font-bold italic">
               SHOPNEST
@@ -34,7 +37,24 @@ function TopBar({ toggleCart }: TopBarProps) {
             <SearchBox />
             <div className="flex items-center gap-4">
               <ShoppingCart onClick={toggleCart} className="cursor-pointer" />
-              <UserCircle />
+              {userInfo ? (
+                <UserCircle className="cursor-pointer" />
+              ) : (
+                <>
+                  <Link
+                    to={"/login"}
+                    className="bg-secondary text-primary text-xs font-semibold px-4 py-2 rounded-md"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to={"/register"}
+                    className="bg-secondary text-primary text-xs font-semibold px-4 py-2 rounded-md"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -44,7 +64,7 @@ function TopBar({ toggleCart }: TopBarProps) {
             <Link to={"/"} className="text-2xl font-bold italic">
               SHOPNEST
             </Link>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <Drawer>
                 <DrawerTrigger>
                   <ShoppingCart
@@ -73,7 +93,24 @@ function TopBar({ toggleCart }: TopBarProps) {
                   </DrawerFooter>
                 </DrawerContent>
               </Drawer>
-              <UserCircle />
+              {userInfo ? (
+                <UserCircle className="cursor-pointer" />
+              ) : (
+                <>
+                  <Link
+                    to={"/login"}
+                    className="bg-secondary text-primary text-xs font-medium px-3 py-1.5 rounded-md"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to={"/register"}
+                    className="bg-secondary text-primary text-xs font-medium px-3 py-1.5 rounded-md"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2 secondary-bg px-6 py-2">

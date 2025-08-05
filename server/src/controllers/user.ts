@@ -8,7 +8,7 @@ import generateToken from "../utils/generateToken";
 // @access Public
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -17,12 +17,12 @@ export const registerUser = asyncHandler(
       throw new Error("User already exist with this email address.");
     }
 
-    const newUser = await User.create({ name, email, password });
+    const newUser = await User.create({ username, email, password });
 
     if (newUser) {
       res.status(201).json({
         _id: newUser._id,
-        name: newUser.name,
+        username: newUser.username,
         email: newUser.email,
       });
     }
@@ -41,7 +41,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     generateToken(res, existingUser._id);
     res.status(200).json({
       _id: existingUser._id,
-      name: existingUser.name,
+      username: existingUser.username,
       email: existingUser.email,
     });
   } else {

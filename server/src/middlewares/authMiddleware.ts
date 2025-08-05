@@ -6,7 +6,7 @@ import { Types } from "mongoose";
 
 interface User {
   _id: Types.ObjectId | string;
-  name: string;
+  username: string;
   email: string;
   role: "customer" | "admin";
 }

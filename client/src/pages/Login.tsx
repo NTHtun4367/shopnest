@@ -3,7 +3,7 @@ import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
-  // CardDescription,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
@@ -19,12 +19,21 @@ import {
 import { Input } from "../components/ui/input";
 
 import * as z from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useLoginMutation } from "@/store/slices/userApi";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "@/store/slices/auth";
+
+type formInputs = z.infer<typeof loginSchema>;
 
 function Login() {
-  const form = useForm<z.infer<typeof loginSchema>>({
+  const [loginMutation, { isLoading }] = useLoginMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const form = useForm<formInputs>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -32,8 +41,16 @@ function Login() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    console.log(values);
+  const onSubmit: SubmitHandler<formInputs> = async (data) => {
+    try {
+      const response = await loginMutation(data).unwrap();
+      dispatch(setUserInfo(response));
+      form.reset();
+      toast.success("Login successful.");
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+    }
   };
 
   return (
@@ -41,9 +58,9 @@ function Login() {
       <Card>
         <CardHeader>
           <CardTitle className="text-center">SHOPNEST</CardTitle>
-          {/* <CardDescription className="text-center">
-            Card Description
-          </CardDescription> */}
+          <CardDescription className="text-center">
+            Enter your information to login
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -74,7 +91,7 @@ function Login() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 Login
               </Button>
             </form>

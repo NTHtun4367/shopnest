@@ -7,6 +7,9 @@ import Home from "./pages/Home.tsx";
 import Register from "./pages/Register.tsx";
 import Login from "./pages/Login.tsx";
 import ProductDetails from "./pages/ProductDetails.tsx";
+import { Provider } from "react-redux";
+import { store } from "./store/index.ts";
+import { Toaster } from "sonner";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +37,9 @@ const router = createBrowserRouter([
 ]);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+      <Toaster richColors />
+    </Provider>
   </StrictMode>
 );

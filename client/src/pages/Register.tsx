@@ -3,7 +3,7 @@ import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
-  // CardDescription,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
@@ -19,12 +19,18 @@ import {
 import { Input } from "../components/ui/input";
 
 import * as z from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useRegisterMutation } from "@/store/slices/userApi";
+import { toast } from "sonner";
+
+type formInputs = z.infer<typeof registerSchema>;
 
 function Register() {
-  const form = useForm<z.infer<typeof registerSchema>>({
+  const [registerMutation, { isLoading }] = useRegisterMutation();
+  const navigate = useNavigate();
+  const form = useForm<formInputs>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
@@ -33,8 +39,15 @@ function Register() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    console.log(values);
+  const onSubmit: SubmitHandler<formInputs> = async (data) => {
+    try {
+      await registerMutation(data).unwrap();
+      form.reset();
+      toast.success("Register successful.");
+      navigate("/login");
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+    }
   };
 
   return (
@@ -42,9 +55,9 @@ function Register() {
       <Card>
         <CardHeader>
           <CardTitle className="text-center">SHOPNEST</CardTitle>
-          {/* <CardDescription className="text-center">
-            Card Description
-          </CardDescription> */}
+          <CardDescription className="text-center">
+            Enter your information to register
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -88,7 +101,7 @@ function Register() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 Register
               </Button>
             </form>
