@@ -12,11 +12,22 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { Button } from "@/components/ui/button";
 import { products } from "@/utils/products";
 import CartItem from "./cart/CartItem";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
+import { clearUserInfo } from "@/store/slices/auth";
+import { useLogoutMutation } from "@/store/slices/userApi";
 
 interface TopBarProps {
   toggleCart(): void;
@@ -24,7 +35,18 @@ interface TopBarProps {
 
 function TopBar({ toggleCart }: TopBarProps) {
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  const dispatch = useDispatch();
+  const [logoutMutation, { isLoading }] = useLogoutMutation();
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const logoutHandler = async () => {
+    try {
+      await logoutMutation({});
+      dispatch(clearUserInfo());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -38,7 +60,27 @@ function TopBar({ toggleCart }: TopBarProps) {
             <div className="flex items-center gap-4">
               <ShoppingCart onClick={toggleCart} className="cursor-pointer" />
               {userInfo ? (
-                <UserCircle className="cursor-pointer" />
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <UserCircle className="cursor-pointer" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <Link to={"/profile"}>
+                      <DropdownMenuItem className="cursor-pointer">
+                        Profile
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={logoutHandler}
+                      disabled={isLoading}
+                    >
+                      <span className="text-destructive">Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <>
                   <Link
@@ -94,7 +136,27 @@ function TopBar({ toggleCart }: TopBarProps) {
                 </DrawerContent>
               </Drawer>
               {userInfo ? (
-                <UserCircle className="cursor-pointer" />
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <UserCircle className="cursor-pointer" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <Link to={"/profile"}>
+                      <DropdownMenuItem className="cursor-pointer">
+                        Profile
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={logoutHandler}
+                      disabled={isLoading}
+                    >
+                      <span className="text-destructive">Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <>
                   <Link

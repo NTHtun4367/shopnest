@@ -24,13 +24,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "@/store/slices/userApi";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserInfo } from "@/store/slices/auth";
+import type { RootState } from "@/store";
+import { useEffect } from "react";
 
 type formInputs = z.infer<typeof loginSchema>;
 
 function Login() {
   const [loginMutation, { isLoading }] = useLoginMutation();
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const form = useForm<formInputs>({
@@ -52,6 +55,10 @@ function Login() {
       toast.error(error?.data?.message);
     }
   };
+
+  useEffect(() => {
+    if (userInfo) navigate("/");
+  }, [navigate, userInfo]);
 
   return (
     <div className="max-w-[450px] lg:mx-auto mx-6 my-6">

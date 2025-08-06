@@ -24,11 +24,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router";
 import { useRegisterMutation } from "@/store/slices/userApi";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import { useEffect } from "react";
 
 type formInputs = z.infer<typeof registerSchema>;
 
 function Register() {
   const [registerMutation, { isLoading }] = useRegisterMutation();
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const navigate = useNavigate();
   const form = useForm<formInputs>({
     resolver: zodResolver(registerSchema),
@@ -49,6 +53,10 @@ function Register() {
       toast.error(error?.data?.message);
     }
   };
+
+  useEffect(() => {
+    if (userInfo) navigate("/");
+  }, [navigate, userInfo]);
 
   return (
     <div className="max-w-[450px] lg:mx-auto mx-6 my-6">

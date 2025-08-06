@@ -34,7 +34,6 @@ export const registerUser = asyncHandler(
 // @access Public
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
   const existingUser = await User.findOne({ email });
 
   if (existingUser && (await existingUser.matchPassword(password))) {
@@ -43,6 +42,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
       _id: existingUser._id,
       username: existingUser.username,
       email: existingUser.email,
+      role: existingUser.role,
     });
   } else {
     res.status(404);

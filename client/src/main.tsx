@@ -10,6 +10,8 @@ import ProductDetails from "./pages/ProductDetails.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store/index.ts";
 import { Toaster } from "sonner";
+import Protect from "./pages/Protect.tsx";
+import Profile from "./pages/Profile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
       {
         path: "/products/:id",
         element: <ProductDetails />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <Protect>
+            <Profile />
+          </Protect>
+        ),
       },
     ],
   },
