@@ -102,7 +102,7 @@ function TopBar({ toggleCart }: TopBarProps) {
         </nav>
       ) : (
         <nav className="flex flex-col">
-          <div className="flex items-center justify-between w-full primary-bg text-white px-6 py-4">
+          <div className="flex items-center justify-between w-full bg-primary text-white px-6 py-4">
             <Link to={"/"} className="text-2xl font-bold italic">
               SHOPNEST
             </Link>
@@ -131,7 +131,7 @@ function TopBar({ toggleCart }: TopBarProps) {
                     ))}
                   </div>
                   <DrawerFooter>
-                    <Button className="primary-bg">Go to Checkout</Button>
+                    <Button className="bg-primary">Go to Checkout</Button>
                   </DrawerFooter>
                 </DrawerContent>
               </Drawer>

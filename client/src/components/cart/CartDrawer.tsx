@@ -36,7 +36,7 @@ function CartDrawer({ isCartOpen, toggleCart }: CartDrawerProps) {
                 />
               ))}
             </div>
-            <button className="absolute bottom-0 right-0 w-full primary-bg py-2 text-white text-center rounded-md">
+            <button className="absolute bottom-0 right-0 w-full bg-primary py-2 text-white text-center rounded-md cursor-pointer">
               Go to Checkout
             </button>
           </div>
