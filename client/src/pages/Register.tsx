@@ -37,7 +37,7 @@ function Register() {
   const form = useForm<formInputs>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
     },
@@ -72,10 +72,10 @@ function Register() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="username"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input placeholder="shopnest" {...field} />
                     </FormControl>

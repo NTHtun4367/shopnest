@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 export const registerValidator = [
-  body("username").notEmpty().withMessage("Username is required."),
+  body("name").notEmpty().withMessage("Name is required."),
   body("email").isEmail().withMessage("Invalid email address."),
   body("password")
     .isLength({ min: 6 })
@@ -17,4 +17,12 @@ export const loginValidator = [
 
 export const uploadImageAvatarValidator = [
   body("image_url").notEmpty().withMessage("Image is required."),
+];
+
+export const emailUpdateValidator = [
+  body("email").isEmail().withMessage("Invalid email address."),
+];
+
+export const nameUpdateValidator = [
+  body("name").notEmpty().withMessage("Name is required."),
 ];

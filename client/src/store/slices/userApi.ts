@@ -7,11 +7,19 @@ interface loginInput {
 }
 
 interface registerInput extends loginInput {
-  username: string;
+  name: string;
 }
 
 interface avatarUploadInput {
   image_url: string;
+}
+
+interface emailUpdateInput {
+  email: string;
+}
+
+interface nameUpdateInput {
+  name: string;
 }
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -41,6 +49,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: "/me",
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
     uploadAvatar: builder.mutation({
       query: (data: avatarUploadInput) => ({
@@ -48,6 +57,23 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
+    }),
+    emailUpdate: builder.mutation({
+      query: (data: emailUpdateInput) => ({
+        url: "/update-email",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    nameUpdate: builder.mutation({
+      query: (data: nameUpdateInput) => ({
+        url: "/update-name",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -58,4 +84,6 @@ export const {
   useLogoutMutation,
   useCurrentUserQuery,
   useUploadAvatarMutation,
+  useEmailUpdateMutation,
+  useNameUpdateMutation,
 } = userApiSlice;

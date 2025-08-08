@@ -10,7 +10,7 @@ import { deleteImage, uploadSingleImage } from "../utils/cloudinary";
 // @access Public
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -19,12 +19,12 @@ export const registerUser = asyncHandler(
       throw new Error("User already exist with this email address.");
     }
 
-    const newUser = await User.create({ username, email, password });
+    const newUser = await User.create({ name, email, password });
 
     if (newUser) {
       res.status(201).json({
         _id: newUser._id,
-        username: newUser.username,
+        name: newUser.name,
         email: newUser.email,
       });
     }
@@ -42,9 +42,6 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     generateToken(res, existingUser._id);
     res.status(200).json({
       _id: existingUser._id,
-      username: existingUser.username,
-      email: existingUser.email,
-      role: existingUser.role,
     });
   } else {
     res.status(404);
@@ -101,5 +98,39 @@ export const getUserInfo = asyncHandler(
     const userDoc = await User.findById(user?._id).select("-password");
 
     res.status(200).json(userDoc);
+  }
+);
+
+// @route POST | api/update-email
+// @desc Update user's email
+// @access Private
+export const updateEmailAddress = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { user } = req;
+    const { email } = req.body;
+
+    const existingEmailUser = await User.findOne({ email });
+
+    if (existingEmailUser) {
+      throw new Error("Email is already used by another users.");
+    }
+
+    await User.findByIdAndUpdate(user?._id, { email });
+
+    res.status(200).json({ message: "User email updated." });
+  }
+);
+
+// @route POST | api/update-email
+// @desc Update user's email
+// @access Private
+export const updateName = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { user } = req;
+    const { name } = req.body;
+
+    await User.findByIdAndUpdate(user?._id, { name });
+
+    res.status(200).json({ message: "Profile name updated." });
   }
 );

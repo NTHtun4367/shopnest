@@ -4,11 +4,15 @@ import {
   loginUser,
   logoutUser,
   registerUser,
+  updateEmailAddress,
+  updateName,
   uploadAvatar,
 } from "../controllers/user";
 import { protect } from "../middlewares/authMiddleware";
 import {
+  emailUpdateValidator,
   loginValidator,
+  nameUpdateValidator,
   registerValidator,
   uploadImageAvatarValidator,
 } from "../validators/user";
@@ -28,5 +32,19 @@ router.post(
   uploadAvatar
 );
 router.get("/me", protect, getUserInfo);
+router.post(
+  "/update-email",
+  emailUpdateValidator,
+  validateRequest,
+  protect,
+  updateEmailAddress
+);
+router.post(
+  "/update-name",
+  nameUpdateValidator,
+  validateRequest,
+  protect,
+  updateName
+);
 
 export default router;
