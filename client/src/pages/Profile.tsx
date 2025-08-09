@@ -12,6 +12,7 @@ import NameUpdatForm from "@/components/profile/NameUpdateForm";
 
 import { useCurrentUserQuery } from "@/store/slices/userApi";
 import AvatarUploadForm from "@/components/profile/AvatarUploadForm";
+import PasswordUpdateForm from "@/components/profile/PasswordUpdateForm";
 
 function Profile() {
   const { data: userInfo, isLoading } = useCurrentUserQuery();
@@ -35,6 +36,9 @@ function Profile() {
             <div className="w-full flex gap-4 mt-4">
               <EmailUpdateForm email={userInfo?.email!} />
               <NameUpdatForm name={userInfo?.name!} />
+            </div>
+            <div className="mt-4">
+              <PasswordUpdateForm />
             </div>
           </CardContent>
         </Card>

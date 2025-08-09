@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import generateToken from "../utils/generateToken";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import { deleteImage, uploadSingleImage } from "../utils/cloudinary";
+import bcrypt from "bcrypt";
 
 // @route POST | api/register
 // @desc Register new user
@@ -121,8 +122,8 @@ export const updateEmailAddress = asyncHandler(
   }
 );
 
-// @route POST | api/update-email
-// @desc Update user's email
+// @route POST | api/update-name
+// @desc Update user's name
 // @access Private
 export const updateName = asyncHandler(
   async (req: AuthRequest, res: Response) => {
@@ -132,5 +133,32 @@ export const updateName = asyncHandler(
     await User.findByIdAndUpdate(user?._id, { name });
 
     res.status(200).json({ message: "Profile name updated." });
+  }
+);
+
+// @route POST | api/update-password
+// @desc Update user's password
+// @access Private
+export const updatePassword = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { user } = req;
+    const { oldPassword, newPassword } = req.body;
+
+    const existingUser = await User.findById(user?._id).select("+password");
+
+    if (!existingUser) {
+      throw new Error("Something went wrong");
+    }
+
+    const isMatched = await bcrypt.compare(oldPassword, existingUser.password);
+
+    if (!isMatched) {
+      throw new Error("Old password is wrong.");
+    }
+
+    existingUser.password = newPassword;
+    await existingUser.save();
+
+    res.status(200).json({ message: "Password updated." });
   }
 );
