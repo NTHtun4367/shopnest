@@ -5,6 +5,8 @@ import generateToken from "../utils/generateToken";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import { deleteImage, uploadSingleImage } from "../utils/cloudinary";
 import bcrypt from "bcrypt";
+import { forgetPasswordEmailTemplate } from "../utils/emailTemplate";
+import { sendMail } from "../utils/sendEmail";
 
 // @route POST | api/register
 // @desc Register new user
@@ -160,5 +162,40 @@ export const updatePassword = asyncHandler(
     await existingUser.save();
 
     res.status(200).json({ message: "Password updated." });
+  }
+);
+
+// @route POST | api/forgot-password
+// @desc Send email to user's own email
+// @access Private
+export const sendForgotPasswordEmail = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { user } = req;
+    const { email } = req.body;
+    const existingUser = await User.findOne({ email });
+
+    if (!existingUser) {
+      throw new Error("This email doesn't exist.");
+    }
+
+    const token = await existingUser.generatePasswordResetToken();
+    await existingUser.save();
+
+    const resetPasswordUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
+    const body = forgetPasswordEmailTemplate(resetPasswordUrl);
+
+    try {
+      await sendMail({
+        receiver_mail: user?.email!,
+        subject: "Password Reset - SHOPNEST",
+        body,
+      });
+    } catch (error) {
+      existingUser.resetPasswordToken = undefined;
+      existingUser.resetPasswordExpire = undefined;
+      await existingUser.save();
+    }
+
+    res.status(200).json({ message: "Reset password email send." });
   }
 );
