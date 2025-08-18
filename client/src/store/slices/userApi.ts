@@ -27,6 +27,15 @@ interface passwordUpdateInputs {
   newPassword: string;
 }
 
+interface forgotPasswordInput {
+  email: string;
+}
+
+interface resetPasswordInputs {
+  token: string;
+  newPassword: string;
+}
+
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
@@ -87,6 +96,22 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    forgotPassword: builder.mutation({
+      query: (data: forgotPasswordInput) => ({
+        url: "/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (data: resetPasswordInputs) => ({
+        url: `/reset-password/${data.token}`,
+        method: "POST",
+        body: {
+          newPassword: data.newPassword,
+        },
+      }),
+    }),
   }),
 });
 
@@ -99,4 +124,6 @@ export const {
   useEmailUpdateMutation,
   useNameUpdateMutation,
   usePasswordUpdateMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = userApiSlice;

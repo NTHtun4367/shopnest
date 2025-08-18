@@ -1,4 +1,4 @@
-import { loginSchema } from "@/schema/auth";
+import { forgotPasswordSchema } from "@/schema/auth";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -21,36 +21,32 @@ import { Input } from "../components/ui/input";
 import * as z from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router";
-import { useLoginMutation } from "@/store/slices/userApi";
+import { useNavigate } from "react-router";
+import { useForgotPasswordMutation } from "@/store/slices/userApi";
 import { toast } from "sonner";
-import { useDispatch, useSelector } from "react-redux";
-import { setUserInfo } from "@/store/slices/auth";
+import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { useEffect } from "react";
 
-type formInputs = z.infer<typeof loginSchema>;
+type formInputs = z.infer<typeof forgotPasswordSchema>;
 
-function Login() {
-  const [loginMutation, { isLoading }] = useLoginMutation();
+function ForgotPassword() {
+  const [forgotPasswordMutation, { isLoading }] = useForgotPasswordMutation();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   const form = useForm<formInputs>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
   const onSubmit: SubmitHandler<formInputs> = async (data) => {
     try {
-      const response = await loginMutation(data).unwrap();
-      dispatch(setUserInfo(response));
+      await forgotPasswordMutation(data).unwrap();
       form.reset();
-      toast.success("Login successful.");
-      navigate("/");
+      toast.success("Email send.");
     } catch (error: any) {
       toast.error(error?.data?.message);
     }
@@ -66,7 +62,7 @@ function Login() {
         <CardHeader>
           <CardTitle className="text-center">SHOPNEST</CardTitle>
           <CardDescription className="text-center">
-            Enter your information to login
+            Enter your email to get password reset mail
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -85,35 +81,15 @@ function Login() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="mb-2">
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input placeholder="******" {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Link to={"/forgot-password"} className="text-xs font-medium underline">Forgot password?</Link>
-              <Button type="submit" className="w-full mt-2" disabled={isLoading}>
-                Login
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                Forgot Password
               </Button>
             </form>
           </Form>
-          <p className="text-xs text-center font-medium mt-4">
-            Don't have an account?
-            <Link to={"/register"} className="underline ps-1">
-              Register
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-export default Login;
+export default ForgotPassword;

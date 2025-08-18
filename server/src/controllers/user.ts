@@ -7,6 +7,7 @@ import { deleteImage, uploadSingleImage } from "../utils/cloudinary";
 import bcrypt from "bcrypt";
 import { forgetPasswordEmailTemplate } from "../utils/emailTemplate";
 import { sendMail } from "../utils/sendEmail";
+import crypto from "crypto";
 
 // @route POST | api/register
 // @desc Register new user
@@ -169,8 +170,7 @@ export const updatePassword = asyncHandler(
 // @desc Send email to user's own email
 // @access Private
 export const sendForgotPasswordEmail = asyncHandler(
-  async (req: AuthRequest, res: Response) => {
-    const { user } = req;
+  async (req: Request, res: Response) => {
     const { email } = req.body;
     const existingUser = await User.findOne({ email });
 
@@ -179,6 +179,7 @@ export const sendForgotPasswordEmail = asyncHandler(
     }
 
     const token = await existingUser.generatePasswordResetToken();
+
     await existingUser.save();
 
     const resetPasswordUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
@@ -186,7 +187,7 @@ export const sendForgotPasswordEmail = asyncHandler(
 
     try {
       await sendMail({
-        receiver_mail: user?.email!,
+        receiver_mail: existingUser?.email!,
         subject: "Password Reset - SHOPNEST",
         body,
       });
@@ -197,5 +198,32 @@ export const sendForgotPasswordEmail = asyncHandler(
     }
 
     res.status(200).json({ message: "Reset password email send." });
+  }
+);
+
+// @route POST | api/reset-password/:token
+// @desc Change user's email
+// @access Private
+export const resetPassword = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      throw new Error("Invalid token. Request email again.");
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password changed." });
   }
 );

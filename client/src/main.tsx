@@ -12,6 +12,8 @@ import { store } from "./store/index.ts";
 import { Toaster } from "sonner";
 import Protect from "./pages/Protect.tsx";
 import Profile from "./pages/Profile.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
+import ForgotPassword from "./pages/ForgotPassword.tsx";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/reset-password/:id",
+        element: <ResetPassword />,
       },
       {
         path: "/login",

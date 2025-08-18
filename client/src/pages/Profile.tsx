@@ -13,6 +13,7 @@ import NameUpdatForm from "@/components/profile/NameUpdateForm";
 import { useCurrentUserQuery } from "@/store/slices/userApi";
 import AvatarUploadForm from "@/components/profile/AvatarUploadForm";
 import PasswordUpdateForm from "@/components/profile/PasswordUpdateForm";
+import ResetPasswordForm from "@/components/profile/ResetPassword";
 
 function Profile() {
   const { data: userInfo, isLoading } = useCurrentUserQuery();
@@ -40,6 +41,7 @@ function Profile() {
             <div className="mt-4">
               <PasswordUpdateForm />
             </div>
+            <ResetPasswordForm email={userInfo?.email!} />
           </CardContent>
         </Card>
       )}

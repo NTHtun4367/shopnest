@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 export const registerValidator = [
   body("name").notEmpty().withMessage("Name is required."),
@@ -38,4 +38,11 @@ export const passwordUpdateValidator = [
 
 export const passwordResetValidator = [
   body("email").isEmail().withMessage("Invalid email address."),
+];
+
+export const passwordChangeValidator = [
+  param("token").notEmpty().withMessage("Token is required."),
+  body("newPassword")
+    .isLength({ min: 6 })
+    .withMessage("New password must be at least 6 characters."),
 ];

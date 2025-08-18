@@ -17,3 +17,21 @@ export const loginSchema = z.object({
     .string()
     .min(6, { message: "Password must have at least 6 characters." }),
 });
+
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(6, { message: "Password must have at least 6 characters." }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: "Password must have at least 6 characters." }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Password are don't match.",
+    path: ["confirmPassword"],
+  });
+
+export const forgotPasswordSchema = z.object({
+  email: z.email({ message: "Please enter a valid email address." }).nonempty(),
+});
