@@ -2,6 +2,11 @@ import { Router } from "express";
 import {
   createProduct,
   deleteProduct,
+  getFeaturedProducts,
+  getNewArrivalProducts,
+  getProductById,
+  getProductsMeta,
+  getProductWithFilters,
   updateProduct,
 } from "../controllers/product";
 import { isAdmin, protect } from "../middlewares/authMiddleware";
@@ -20,5 +25,10 @@ router.post(
 );
 router.put("/products/:id", protect, isAdmin, updateProduct);
 router.delete("/products/:id", protect, isAdmin, deleteProduct);
+router.get("/products", getProductWithFilters);
+router.get("/products/new", getNewArrivalProducts);
+router.get("/products/featured", getFeaturedProducts);
+router.get("/products/:id", getProductById);
+router.get("/filters/meta", getProductsMeta);
 
 export default router;

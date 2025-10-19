@@ -14,6 +14,7 @@ import Protect from "./pages/Protect.tsx";
 import Profile from "./pages/Profile.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import ForgotPassword from "./pages/ForgotPassword.tsx";
+import ProductFilter from "./pages/ProductFilter.tsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "/products/:id",
         element: <ProductDetails />,
+      },
+      {
+        path: "/products/filter",
+        element: <ProductFilter />,
       },
       {
         path: "/profile",

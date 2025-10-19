@@ -54,7 +54,7 @@ function AvatarUploadForm() {
         <div className="w-full flex gap-4">
           <div className="w-1/2 flex flex-col items-center">
             <Avatar className="w-22 h-22">
-              <AvatarImage src={avatar ?? userInfo?.avatar[0]?.url ?? ""} />
+              <AvatarImage src={avatar ?? userInfo?.avatar[0]?.url ?? ""} alt="Avatar Image" />
               {!userInfo?.avatar[0]?.url && (
                 <AvatarFallback>
                   {userInfo?.name?.slice(0, 2).toUpperCase()}

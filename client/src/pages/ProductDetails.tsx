@@ -1,47 +1,31 @@
 import RatingConverter from "@/common/RatingConverter";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { useGetProductDetailsQuery } from "@/store/slices/productApi";
+import type { ProductImage } from "@/types/product";
 import { Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
-const product = {
-  id: 1,
-  name: "Black T-Shirt",
-  price: 200,
-  category: "T-Shirt",
-  description:
-    "Nullam nec turpis et arcu egestas commodo. Integer sit amet metus non tortor tincidunt interdum. Donec et metus mollis, ultricies est at, ultricies nulla. Morbi non libero magna. Praesent imperdiet magna ac ipsum cursus, ut fermentum turpis tincidunt.",
-  size: ["S", "M", "L"],
-  colors: ["#331616", "#25464f", "#edde3b"],
-  rating: 5,
-  images: [
-    {
-      url: "https://www.tradeprint.co.uk/dam/jcr:cfdb2af1-7b39-483a-8fce-f665c63b5222/Heavy%20Cotton%20T-Shirt%20Black.webp",
-    },
-    {
-      url: "https://img.sonofatailor.com/images/customizer/product/highneck/DeepBlue_Regular.jpg",
-    },
-    {
-      url: "https://bdci.imgix.net/i/eea8fe4a_5%20pack%202.jpg?fit=fill&w=500&h=500&bg=fff&q=90&nrs=80",
-    },
-    {
-      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOTXl4SbFGBY1CFkOz8d0sU5KPXhzRscB-2TVQ1XeFboC3kcx-5ClMxhDliOPObvlLANM&usqp=CAU",
-    },
-  ],
-};
-
 function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState<string>();
-  const [selectedColor, setSelectedColor] = useState<string>(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState<string>(product.size[0]);
+  const [selectedColor, setSelectedColor] = useState<string>();
+  const [selectedSize, setSelectedSize] = useState<string>();
+  const [quantity, setQuantity] = useState<number>(1);
   const { id } = useParams();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  const { data: product, isLoading } = useGetProductDetailsQuery(id as string);
+
   useEffect(() => {
-    if (product.images.length > 0) {
-      setSelectedImage(product.images[0].url);
+    if (product) {
+      if (product.images.length > 0) setSelectedImage(product.images[0].url);
+      if (product.colors.length > 0) setSelectedColor(product.colors[0]);
+      if (product.sizes.length > 0) setSelectedSize(product.sizes[0]);
     }
   }, [product]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!product) return <p>Product not found.</p>;
 
   return (
     <section
@@ -58,7 +42,7 @@ function ProductDetails() {
           } object-cover rounded-lg`}
         />
         <div className="flex items-center gap-3 mt-3">
-          {product.images.map((image, index) => (
+          {product.images.map((image: ProductImage, index: number) => (
             <div
               key={index}
               className={`${
@@ -86,7 +70,7 @@ function ProductDetails() {
         <hr className="w-full text-gray-600 my-4" />
         <h2 className="text-xl font-semibold">Colors</h2>
         <div className="flex items-center gap-2">
-          {product.colors.map((color, i) => (
+          {product.colors.map((color: string, i: number) => (
             <div
               key={i}
               className={`w-6 h-6 rounded-full mt-2 cursor-pointer ${
@@ -94,13 +78,14 @@ function ProductDetails() {
               }`}
               style={{ backgroundColor: color }}
               onClick={() => setSelectedColor(color)}
+              title={color}
             />
           ))}
         </div>
         <hr className="w-full text-gray-600 my-4" />
         <h2 className="text-xl font-semibold">Size</h2>
         <div className="flex items-center gap-2">
-          {product.size.map((s, i) => (
+          {product.sizes.map((s: string, i: number) => (
             <div
               key={i}
               className={`text-sm font-semibold px-5 py-1 mt-2 border-2 ${
@@ -119,11 +104,22 @@ function ProductDetails() {
         <hr className="w-full text-gray-600 my-4" />
         <div className="flex items-center gap-4 relative">
           <div className="flex items-center gap-2">
-            <button className="bg-primary p-2 rounded-md text-white">
+            <button
+              className="bg-primary p-2 rounded-md text-white"
+              onClick={() =>
+                setQuantity((prev) => {
+                  if (prev === 1) return 1;
+                  else return prev - 1;
+                })
+              }
+            >
               <Minus className="w-6 h-6 cursor-pointer" />
             </button>
-            <span className="text-xl font-medium px-1">1</span>
-            <button className="bg-primary p-2 rounded-md text-white">
+            <span className="text-xl font-medium px-1">{quantity}</span>
+            <button
+              className="bg-primary p-2 rounded-md text-white"
+              onClick={() => setQuantity((prev) => prev + 1)}
+            >
               <Plus className="w-6 h-6 cursor-pointer" />
             </button>
           </div>

@@ -202,7 +202,7 @@ export const sendForgotPasswordEmail = asyncHandler(
 );
 
 // @route POST | api/reset-password/:token
-// @desc Change user's email
+// @desc Change user's password
 // @access Private
 export const resetPassword = asyncHandler(
   async (req: AuthRequest, res: Response) => {
