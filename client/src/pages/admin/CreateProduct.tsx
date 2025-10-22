@@ -1,5 +1,5 @@
 import type { ProductFormInputs } from "@/schema/product";
-import ProductForm from "./ProductForm";
+import ProductForm from "../../components/admin/ProductForm";
 
 function CreateProduct() {
   const onSubmit = async (data: ProductFormInputs) => {};

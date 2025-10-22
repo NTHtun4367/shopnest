@@ -142,3 +142,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.ProseMirror {
+  outline: none !important;
+}
