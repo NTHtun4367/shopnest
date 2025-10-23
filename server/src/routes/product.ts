@@ -10,8 +10,9 @@ import {
   updateProduct,
 } from "../controllers/product";
 import { isAdmin, protect } from "../middlewares/authMiddleware";
-import { createProductValidator } from "../validators/product";
-import { validateRequest } from "../middlewares/validateRequest";
+// import { createProductValidator } from "../validators/product";
+// import { validateRequest } from "../middlewares/validateRequest";
+import { upload } from "../utils/upload";
 
 const router = Router();
 
@@ -19,8 +20,9 @@ router.post(
   "/products",
   protect,
   isAdmin,
-  createProductValidator,
-  validateRequest,
+  // createProductValidator,
+  // validateRequest,
+  upload.array("images"),
   createProduct
 );
 router.put("/products/:id", protect, isAdmin, updateProduct);

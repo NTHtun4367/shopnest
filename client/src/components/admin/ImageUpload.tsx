@@ -35,7 +35,7 @@ function ImageUpload({ images, onChange }: ImageUploadProps) {
     <div>
       <div className="grid grid-cols-5 gap-4">
         {images.map((image, index) => (
-          <div className="relative mb-4 mt-2">
+          <div className="relative mb-4 mt-2" key={index}>
             <img
               className="w-full h-32 object-cover rounded-lg"
               src={image.preview}

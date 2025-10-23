@@ -95,7 +95,7 @@ function ProductDetails() {
               } rounded-md cursor-pointer`}
               onClick={() => setSelectedSize(s)}
             >
-              {s}
+              {s.toUpperCase()}
             </div>
           ))}
         </div>

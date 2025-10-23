@@ -4,6 +4,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { productSchema, type ProductFormInputs } from "@/schema/product";
@@ -53,6 +54,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
               <FormControl>
                 <Input {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -65,6 +67,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
               <FormControl>
                 <Tiptap value={field.value} onChange={field.onChange} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -79,9 +82,10 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
                   <Input
                     {...field}
                     type="number"
-                    onChange={(e) => field.onChange(e.target.value)}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -95,9 +99,10 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
                   <Input
                     {...field}
                     type="number"
-                    onChange={(e) => field.onChange(e.target.value)}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -111,6 +116,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
               <FormControl>
                 <ImageUpload images={field.value} onChange={field.onChange} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -127,6 +133,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
                     onChange={field.onChange}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -139,6 +146,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
                 <FormControl>
                   <SizeSelector sizes={field.value} onChange={field.onChange} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -152,6 +160,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
               <FormControl>
                 <ColorsPicker colors={field.value} onChange={field.onChange} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -168,6 +177,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -183,6 +193,7 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
