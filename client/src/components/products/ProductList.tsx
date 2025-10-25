@@ -22,7 +22,7 @@ function ProductList({ products }: ProductListProps) {
           name={product.name}
           image={product.images[0].url}
           price={product.price}
-          ratingCount={product.rating}
+          ratingCount={product.rating_count}
         />
       ))}
     </main>

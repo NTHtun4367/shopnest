@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+// const IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export const productSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters"),
@@ -10,15 +10,13 @@ export const productSchema = z.object({
   price: z.number().min(0, "Product price must be greater than 0"),
   instock_count: z.number(),
   category: z.string().min(1, "Category is required"),
-  sizes: z
-    .array(z.enum(["sm", "m", "xs", "lg", "xl", "xxl"]))
-    .min(1, "At least one size is required"),
+  sizes: z.array(z.string()).min(1, "At least one size is required"),
   colors: z.array(z.string()).min(1, "At least one color is required"),
   images: z
     .array(
       z.object({
         file: z.instanceof(File).optional(),
-        preview: z.string(),
+        url: z.string(),
         public_alt: z.string().optional(),
       })
     )

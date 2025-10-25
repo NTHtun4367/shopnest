@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "../utils/asyncHandler";
 import { Product } from "../models/product";
 import { AuthRequest } from "../middlewares/authMiddleware";
-import { uploadSingleImage } from "../utils/cloudinary";
+import { deleteImage, uploadSingleImage } from "../utils/cloudinary";
 
 // @route POST | api/products
 // @desc Add new product
@@ -68,19 +68,27 @@ export const createProduct = asyncHandler(
 // @access Private/Admin
 export const updateProduct = asyncHandler(
   async (req: AuthRequest, res: Response) => {
-    const {
-      name,
-      description,
-      price,
-      instock_count,
-      category,
-      sizes,
-      colors,
-      images,
-      is_new_arrival,
-      is_feature,
-      rating_count,
-    } = req.body;
+    const { name, description, category, existingImages } = req.body;
+
+    const sizes = Array.isArray(req.body.sizes)
+      ? req.body.sizes
+      : [req.body.sizes];
+    const colors = Array.isArray(req.body.colors)
+      ? req.body.colors
+      : [req.body.colors];
+
+    const price = Number(req.body.price);
+    const instock_count = Number(req.body.instock_count);
+    const rating_count = Number(req.body.rating_count);
+
+    const is_feature = req.body.is_feature === "true";
+    const is_new_arrival = req.body.is_new_arrival === "true";
+
+    // parse existing images
+    const keepExistingImages = existingImages ? JSON.parse(existingImages) : [];
+
+    // new images
+    const newImages = req.files as Express.Multer.File[];
 
     const { id } = req.params;
 
@@ -91,6 +99,47 @@ export const updateProduct = asyncHandler(
       throw new Error("No product found.");
     }
 
+    // find images to delete from cloud
+    const imageToDelete = existingProduct.images.filter((existingImg) => {
+      return !keepExistingImages.some(
+        (keepImg: any) => keepImg.public_alt === existingImg.public_alt
+      );
+    });
+
+    // delete existing images
+    if (imageToDelete.length > 0) {
+      await Promise.all(
+        imageToDelete.map(async (img) => {
+          if (img.public_alt) {
+            try {
+              await deleteImage(img.public_alt);
+            } catch (error) {
+              console.log(`Failed to delete image ${img.public_alt}`, error);
+            }
+          }
+        })
+      );
+    }
+
+    // upload new images
+    let uploadNewImages: any[] = [];
+    if (newImages && newImages.length > 0) {
+      uploadNewImages = await Promise.all(
+        newImages.map(async (image) => {
+          const uploadedImg = await uploadSingleImage(
+            `data:${image.mimetype};base64,${image.buffer.toString("base64")}`,
+            "/shopnest/products"
+          );
+          return {
+            url: uploadedImg.image_url,
+            public_alt: uploadedImg.public_alt,
+          };
+        })
+      );
+    }
+
+    const finalImages = [...keepExistingImages, ...uploadNewImages];
+
     existingProduct.name = name || existingProduct.name;
     existingProduct.description = description || existingProduct.description;
     existingProduct.price = price || existingProduct.price;
@@ -99,7 +148,7 @@ export const updateProduct = asyncHandler(
     existingProduct.category = category || existingProduct.category;
     existingProduct.sizes = sizes || existingProduct.sizes;
     existingProduct.colors = colors || existingProduct.colors;
-    existingProduct.images = images || existingProduct.images;
+    existingProduct.images = finalImages;
     existingProduct.is_new_arrival =
       is_new_arrival || existingProduct.is_new_arrival;
     existingProduct.is_feature = is_feature || existingProduct.is_feature;

@@ -20,12 +20,16 @@ router.post(
   "/products",
   protect,
   isAdmin,
-  // createProductValidator,
-  // validateRequest,
   upload.array("images"),
   createProduct
 );
-router.put("/products/:id", protect, isAdmin, updateProduct);
+router.put(
+  "/products/:id",
+  protect,
+  isAdmin,
+  upload.array("images"),
+  updateProduct
+);
 router.delete("/products/:id", protect, isAdmin, deleteProduct);
 router.get("/products", getProductWithFilters);
 router.get("/products/new", getNewArrivalProducts);

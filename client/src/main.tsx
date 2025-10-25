@@ -18,6 +18,7 @@ import ProductFilter from "./pages/ProductFilter.tsx";
 import IsAdmin from "./pages/protector/isAdmin.tsx";
 import CreateProduct from "./pages/admin/CreateProduct.tsx";
 import Panel from "./pages/admin/Panel.tsx";
+import EditProduct from "./pages/admin/EditProduct.tsx";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
           {
             path: "/admin/create-product",
             element: <CreateProduct />,
+          },
+          {
+            path: "/admin/edit-product/:id",
+            element: <EditProduct />,
           },
         ],
       },

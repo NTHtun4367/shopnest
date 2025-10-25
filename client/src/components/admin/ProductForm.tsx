@@ -17,6 +17,7 @@ import SizeSelector from "./SizeSelector";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import Tiptap from "../editor/Tiptap";
+import { useEffect } from "react";
 
 interface ProductFormProps {
   initialData?: any;
@@ -25,22 +26,46 @@ interface ProductFormProps {
 }
 
 function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
+  const formData = initialData
+    ? {
+        name: initialData.name,
+        description: initialData.description,
+        category: initialData.category,
+        colors: initialData.colors,
+        sizes: initialData.sizes,
+        instock_count: initialData.instock_count,
+        is_new_arrival: initialData.is_new_arrival,
+        is_feature: initialData.is_feature,
+        rating_count: initialData.rating_count,
+        price: initialData.price,
+        images: initialData.images.map((img: any) => ({
+          url: img.url,
+          public_alt: img.public_alt,
+        })),
+      }
+    : {
+        name: "",
+        description: "",
+        category: "",
+        images: [],
+        colors: [],
+        sizes: [],
+        instock_count: 0,
+        is_new_arrival: false,
+        is_feature: false,
+        price: 0,
+        rating_count: 0,
+      };
   const form = useForm<ProductFormInputs>({
     resolver: zodResolver(productSchema),
-    defaultValues: initialData || {
-      name: "",
-      description: "",
-      category: "",
-      images: [],
-      colors: [],
-      sizes: [],
-      instock_count: 0,
-      is_new_arrival: false,
-      is_feature: false,
-      price: 0,
-      rating_count: 0,
-    },
+    defaultValues: formData,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset(formData);
+    }
+  }, [form, initialData]);
 
   return (
     <Form {...form}>

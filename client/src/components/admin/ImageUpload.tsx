@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
 interface ImageUploadProps {
-  images: Array<{ preview: string; public_alt?: string }>;
+  images: Array<{ url: string; file?: File; public_alt?: string }>;
   onChange: (
-    images: Array<{ preview: string; file?: File; public_alt?: string }>
+    images: Array<{ url: string; file?: File; public_alt?: string }>
   ) => void;
 }
 
@@ -14,7 +14,7 @@ function ImageUpload({ images, onChange }: ImageUploadProps) {
 
     const newImages = files.map((file) => ({
       file,
-      preview: URL.createObjectURL(file),
+      url: URL.createObjectURL(file),
     }));
 
     onChange([...images, ...newImages]);
@@ -23,8 +23,8 @@ function ImageUpload({ images, onChange }: ImageUploadProps) {
   const removeImage = (index: number) => {
     const newImages = [...images];
 
-    if (images[index].preview.startsWith("blob:")) {
-      URL.revokeObjectURL(images[index].preview);
+    if (images[index].url.startsWith("blob:")) {
+      URL.revokeObjectURL(images[index].url);
     }
 
     newImages.splice(index, 1);
@@ -37,8 +37,10 @@ function ImageUpload({ images, onChange }: ImageUploadProps) {
         {images.map((image, index) => (
           <div className="relative mb-4 mt-2" key={index}>
             <img
-              className="w-full h-32 object-cover rounded-lg"
-              src={image.preview}
+              className={`w-full h-32 object-cover rounded-lg ${
+                image.file && "border-2 border-dashed border-primary p-1"
+              }`}
+              src={image.url}
               alt={`Preview ${index + 1}`}
             />
             <Button

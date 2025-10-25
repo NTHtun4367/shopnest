@@ -63,10 +63,8 @@ function ProductDetails() {
       </div>
       <div className={`${isDesktop ? "w-3/5 ps-8" : "w-full px-6 pt-4"}`}>
         <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
-        <RatingConverter count={product.rating} />
-        <p className="text-sm font-medium text-gray-600 mt-2">
-          {product.description}
-        </p>
+        <RatingConverter count={product.rating_count} />
+        <div dangerouslySetInnerHTML={{ __html: product.description }} />
         <hr className="w-full text-gray-600 my-4" />
         <h2 className="text-xl font-semibold">Colors</h2>
         <div className="flex items-center gap-2">

@@ -2,6 +2,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Button } from "../ui/button";
 import { Bold, Italic, List, ListOrdered } from "lucide-react";
+import { useEffect } from "react";
 
 interface TiptapProps {
   value: string;
@@ -18,6 +19,13 @@ const Tiptap = ({ value, onChange }: TiptapProps) => {
   });
 
   if (!editor) return null;
+
+  // when value is change, update editor content
+  useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value);
+    }
+  }, [editor, value]);
 
   return (
     <div className="border rounded-lg p-2">
@@ -55,7 +63,7 @@ const Tiptap = ({ value, onChange }: TiptapProps) => {
           <ListOrdered />
         </Button>
       </div>
-      <EditorContent editor={editor} className="prose" />
+      <EditorContent value={value} editor={editor} className="prose" />
     </div>
   );
 };
