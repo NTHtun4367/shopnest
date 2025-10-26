@@ -50,7 +50,7 @@ function EditProduct() {
 
       await updateProduct({ id: id!, formData }).unwrap();
       toast.success("Product update successfully.");
-      navigate("/admin/products");
+      navigate("/admin/manage-products");
     } catch (error) {
       console.log(error);
       toast.error("Failed to update product.");

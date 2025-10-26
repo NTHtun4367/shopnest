@@ -11,6 +11,8 @@ export interface Product {
   sizes: string[];
   colors: string[];
   rating_count: number;
+  instock_count: number;
+  createdAt: string;
   images: ProductImage[];
 }
 

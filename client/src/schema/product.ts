@@ -8,7 +8,9 @@ export const productSchema = z.object({
     .string()
     .min(10, "Product description must be at least 10 characters"),
   price: z.number().min(0, "Product price must be greater than 0"),
-  instock_count: z.number(),
+  instock_count: z
+    .number()
+    .min(0, "Product price must be greater than or equal to 0"),
   category: z.string().min(1, "Category is required"),
   sizes: z.array(z.string()).min(1, "At least one size is required"),
   colors: z.array(z.string()).min(1, "At least one color is required"),

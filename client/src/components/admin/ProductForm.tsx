@@ -33,7 +33,8 @@ function ProductForm({ initialData, onSubmit, isLoading }: ProductFormProps) {
         category: initialData.category,
         colors: initialData.colors,
         sizes: initialData.sizes,
-        instock_count: initialData.instock_count,
+        instock_count:
+          initialData.instock_count <= -1 ? 0 : initialData.instock_count,
         is_new_arrival: initialData.is_new_arrival,
         is_feature: initialData.is_feature,
         rating_count: initialData.rating_count,

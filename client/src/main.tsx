@@ -19,6 +19,7 @@ import IsAdmin from "./pages/protector/isAdmin.tsx";
 import CreateProduct from "./pages/admin/CreateProduct.tsx";
 import Panel from "./pages/admin/Panel.tsx";
 import EditProduct from "./pages/admin/EditProduct.tsx";
+import ProductManagement from "./pages/admin/ProductManagement.tsx";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
           {
             path: "/admin/edit-product/:id",
             element: <EditProduct />,
+          },
+          {
+            path: "/admin/manage-products",
+            element: <ProductManagement />,
           },
         ],
       },

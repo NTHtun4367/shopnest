@@ -174,8 +174,26 @@ export const deleteProduct = asyncHandler(
       throw new Error("No product found.");
     }
 
-    await existingProduct.deleteOne();
-    res.status(404).json({ message: "Product destroy." });
+    const imageToDelete = existingProduct.images.map((img) => img.public_alt);
+
+    try {
+      await existingProduct.deleteOne();
+
+      if (imageToDelete.length > 0) {
+        await Promise.all(
+          imageToDelete.map(async (public_alt) => {
+            try {
+              await deleteImage(public_alt);
+            } catch (error) {
+              console.log("Failed to delete image " + public_alt, error);
+            }
+          })
+        );
+      }
+      res.status(200).json({ message: "Product destroy!" });
+    } catch (error) {
+      throw new Error("Failed to delete product!");
+    }
   }
 );
 
