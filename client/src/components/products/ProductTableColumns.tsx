@@ -15,6 +15,7 @@ import { Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useDeleteProductMutation } from "@/store/slices/productApi";
+import TableHeaderWithSortIcon from "./TableHeaderWithSortIcon";
 
 function useProductColumns(): ColumnDef<Product>[] {
   const navigate = useNavigate();
@@ -101,10 +102,17 @@ function useProductColumns(): ColumnDef<Product>[] {
     },
     {
       accessorKey: "createdAt",
-      header: "Created",
+      header: ({ column }) => {
+        return (
+          <TableHeaderWithSortIcon
+            text="Created"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          />
+        );
+      },
       cell: ({ getValue }) => {
         const date = new Date(getValue() as string);
-        return <div className="font-medium">{date.toLocaleDateString()}</div>;
+        return <div className="font-medium text-right">{date.toLocaleDateString()}</div>;
       },
     },
     {
