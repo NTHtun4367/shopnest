@@ -1,11 +1,6 @@
 import { resetPasswordSchema } from "@/schema/auth";
-import { Button } from "../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
   Form,
@@ -14,8 +9,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../components/ui/form";
-import { Input } from "../components/ui/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 import * as z from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";

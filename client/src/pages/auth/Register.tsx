@@ -1,12 +1,12 @@
-import { loginSchema } from "@/schema/auth";
-import { Button } from "../components/ui/button";
+import { registerSchema } from "@/schema/auth";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from "../../components/ui/card";
 
 import {
   Form,
@@ -15,30 +15,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../components/ui/form";
-import { Input } from "../components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 
 import * as z from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router";
-import { useLoginMutation } from "@/store/slices/userApi";
+import { useRegisterMutation } from "@/store/slices/userApi";
 import { toast } from "sonner";
-import { useDispatch, useSelector } from "react-redux";
-import { setUserInfo } from "@/store/slices/auth";
+import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { useEffect } from "react";
 
-type formInputs = z.infer<typeof loginSchema>;
+type formInputs = z.infer<typeof registerSchema>;
 
-function Login() {
-  const [loginMutation, { isLoading }] = useLoginMutation();
+function Register() {
+  const [registerMutation, { isLoading }] = useRegisterMutation();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const form = useForm<formInputs>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -46,11 +45,10 @@ function Login() {
 
   const onSubmit: SubmitHandler<formInputs> = async (data) => {
     try {
-      const response = await loginMutation(data).unwrap();
-      dispatch(setUserInfo(response));
+      await registerMutation(data).unwrap();
       form.reset();
-      toast.success("Login successful.");
-      navigate("/");
+      toast.success("Register successful.");
+      navigate("/login");
     } catch (error: any) {
       toast.error(error?.data?.message);
     }
@@ -66,12 +64,25 @@ function Login() {
         <CardHeader>
           <CardTitle className="text-center">SHOPNEST</CardTitle>
           <CardDescription className="text-center">
-            Enter your information to login
+            Enter your information to register
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="shopnest" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -89,7 +100,7 @@ function Login() {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem className="mb-2">
+                  <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input placeholder="******" {...field} type="password" />
@@ -98,16 +109,15 @@ function Login() {
                   </FormItem>
                 )}
               />
-              <Link to={"/forgot-password"} className="text-xs font-medium underline">Forgot password?</Link>
-              <Button type="submit" className="w-full mt-2" disabled={isLoading}>
-                Login
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                Register
               </Button>
             </form>
           </Form>
           <p className="text-xs text-center font-medium mt-4">
-            Don't have an account?
-            <Link to={"/register"} className="underline ps-1">
-              Register
+            Already have an account?
+            <Link to={"/login"} className="underline ps-1">
+              Login
             </Link>
           </p>
         </CardContent>
@@ -116,4 +126,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

@@ -4,22 +4,24 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Main from "./layouts/Main.tsx";
 import Home from "./pages/Home.tsx";
-import Register from "./pages/Register.tsx";
-import Login from "./pages/Login.tsx";
-import ProductDetails from "./pages/ProductDetails.tsx";
+import Register from "./pages/auth/Register.tsx";
+import Login from "./pages/auth/Login.tsx";
+import ProductDetails from "./pages/products/ProductDetails.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store/index.ts";
 import { Toaster } from "sonner";
 import Protect from "./pages/protector/Protect.tsx";
 import Profile from "./pages/Profile.tsx";
-import ResetPassword from "./pages/ResetPassword.tsx";
-import ForgotPassword from "./pages/ForgotPassword.tsx";
-import ProductFilter from "./pages/ProductFilter.tsx";
+import ResetPassword from "./pages/auth/ResetPassword.tsx";
+import ForgotPassword from "./pages/auth/ForgotPassword.tsx";
+import ProductFilter from "./pages/products/ProductFilter.tsx";
 import IsAdmin from "./pages/protector/isAdmin.tsx";
 import CreateProduct from "./pages/admin/CreateProduct.tsx";
 import Panel from "./pages/admin/Panel.tsx";
 import EditProduct from "./pages/admin/EditProduct.tsx";
 import ProductManagement from "./pages/admin/ProductManagement.tsx";
+import Dashboard from "./pages/admin/Dashboard.tsx";
+import UserManagement from "./pages/admin/UserManagement.tsx";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +83,14 @@ const router = createBrowserRouter([
           {
             path: "/admin/manage-products",
             element: <ProductManagement />,
+          },
+          {
+            path: "/admin/dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "/admin/manage-users",
+            element: <UserManagement />,
           },
         ],
       },

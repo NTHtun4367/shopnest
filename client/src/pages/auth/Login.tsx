@@ -1,12 +1,12 @@
-import { forgotPasswordSchema } from "@/schema/auth";
-import { Button } from "../components/ui/button";
+import { loginSchema } from "@/schema/auth";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from "../../components/ui/card";
 
 import {
   Form,
@@ -15,38 +15,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../components/ui/form";
-import { Input } from "../components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 
 import * as z from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router";
-import { useForgotPasswordMutation } from "@/store/slices/userApi";
+import { Link, useNavigate } from "react-router";
+import { useLoginMutation } from "@/store/slices/userApi";
 import { toast } from "sonner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserInfo } from "@/store/slices/auth";
 import type { RootState } from "@/store";
 import { useEffect } from "react";
 
-type formInputs = z.infer<typeof forgotPasswordSchema>;
+type formInputs = z.infer<typeof loginSchema>;
 
-function ForgotPassword() {
-  const [forgotPasswordMutation, { isLoading }] = useForgotPasswordMutation();
+function Login() {
+  const [loginMutation, { isLoading }] = useLoginMutation();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const form = useForm<formInputs>({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
+      password: "",
     },
   });
 
   const onSubmit: SubmitHandler<formInputs> = async (data) => {
     try {
-      await forgotPasswordMutation(data).unwrap();
+      const response = await loginMutation(data).unwrap();
+      dispatch(setUserInfo(response));
       form.reset();
-      toast.success("Email send.");
+      toast.success("Login successful.");
+      navigate("/");
     } catch (error: any) {
       toast.error(error?.data?.message);
     }
@@ -62,7 +66,7 @@ function ForgotPassword() {
         <CardHeader>
           <CardTitle className="text-center">SHOPNEST</CardTitle>
           <CardDescription className="text-center">
-            Enter your email to get password reset mail
+            Enter your information to login
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -81,15 +85,35 @@ function ForgotPassword() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                Forgot Password
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="mb-2">
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input placeholder="******" {...field} type="password" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Link to={"/forgot-password"} className="text-xs font-medium underline">Forgot password?</Link>
+              <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+                Login
               </Button>
             </form>
           </Form>
+          <p className="text-xs text-center font-medium mt-4">
+            Don't have an account?
+            <Link to={"/register"} className="underline ps-1">
+              Register
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-export default ForgotPassword;
+export default Login;

@@ -1,12 +1,12 @@
-import { registerSchema } from "@/schema/auth";
-import { Button } from "../components/ui/button";
+import { forgotPasswordSchema } from "@/schema/auth";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
+} from "../../components/ui/card";
 
 import {
   Form,
@@ -15,40 +15,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../components/ui/form";
-import { Input } from "../components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 
 import * as z from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router";
-import { useRegisterMutation } from "@/store/slices/userApi";
+import { useNavigate } from "react-router";
+import { useForgotPasswordMutation } from "@/store/slices/userApi";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { useEffect } from "react";
 
-type formInputs = z.infer<typeof registerSchema>;
+type formInputs = z.infer<typeof forgotPasswordSchema>;
 
-function Register() {
-  const [registerMutation, { isLoading }] = useRegisterMutation();
+function ForgotPassword() {
+  const [forgotPasswordMutation, { isLoading }] = useForgotPasswordMutation();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const navigate = useNavigate();
+
   const form = useForm<formInputs>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      name: "",
       email: "",
-      password: "",
     },
   });
 
   const onSubmit: SubmitHandler<formInputs> = async (data) => {
     try {
-      await registerMutation(data).unwrap();
+      await forgotPasswordMutation(data).unwrap();
       form.reset();
-      toast.success("Register successful.");
-      navigate("/login");
+      toast.success("Email send.");
     } catch (error: any) {
       toast.error(error?.data?.message);
     }
@@ -64,25 +62,12 @@ function Register() {
         <CardHeader>
           <CardTitle className="text-center">SHOPNEST</CardTitle>
           <CardDescription className="text-center">
-            Enter your information to register
+            Enter your email to get password reset mail
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="shopnest" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
@@ -96,34 +81,15 @@ function Register() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input placeholder="******" {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                Register
+                Forgot Password
               </Button>
             </form>
           </Form>
-          <p className="text-xs text-center font-medium mt-4">
-            Already have an account?
-            <Link to={"/login"} className="underline ps-1">
-              Login
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-export default Register;
+export default ForgotPassword;

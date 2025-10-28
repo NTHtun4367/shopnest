@@ -1,6 +1,6 @@
 import { ShoppingCart, SlidersHorizontal, UserCircle } from "lucide-react";
 import SearchBox from "../common/SearchBox";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import useMediaQuery from "../hooks/useMediaQuery";
 
 import {
@@ -27,7 +27,9 @@ import CartItem from "./cart/CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { clearUserInfo } from "@/store/slices/auth";
-import { useLogoutMutation } from "@/store/slices/userApi";
+import { useCurrentUserQuery, useLogoutMutation } from "@/store/slices/userApi";
+import { useEffect } from "react";
+import { apiSlice } from "@/store/slices/api";
 
 interface TopBarProps {
   toggleCart(): void;
@@ -35,18 +37,28 @@ interface TopBarProps {
 
 function TopBar({ toggleCart }: TopBarProps) {
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [logoutMutation, { isLoading }] = useLogoutMutation();
+  const { data: currentUser, isError } = useCurrentUserQuery();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const logoutHandler = async () => {
     try {
       await logoutMutation({});
       dispatch(clearUserInfo());
+      dispatch(apiSlice.util.resetApiState());
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+      dispatch(clearUserInfo());
+    }
+  }, [isError]);
 
   return (
     <>
@@ -96,6 +108,11 @@ function TopBar({ toggleCart }: TopBarProps) {
                     Register
                   </Link>
                 </>
+              )}
+              {currentUser?.role === "admin" && userInfo && (
+                <Button size={"sm"} variant={"secondary"} asChild>
+                  <Link to={"/admin/dashboard"}>Go to dashboard</Link>
+                </Button>
               )}
             </div>
           </div>
