@@ -1,5 +1,7 @@
 import ProductChart from "@/components/admin/ProductChart";
 import ProductStatusCard from "@/components/admin/ProductStatusCard";
+import RecentOrder from "@/components/products/RecentOrder";
+import RecentProduct from "@/components/products/RecentProduct";
 import { useGetProductsQuery } from "@/store/slices/productApi";
 import type { Product } from "@/types/product";
 
@@ -44,6 +46,14 @@ function Dashboard() {
         />
       </div>
       <ProductChart data={products} />
+      <div className="flex gap-4 mt-6">
+        <div className="flex-1">
+          <RecentProduct data={products} />
+        </div>
+        <div className="flex-1">
+          <RecentOrder />
+        </div>
+      </div>
     </section>
   );
 }
