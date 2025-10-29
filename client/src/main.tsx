@@ -8,7 +8,7 @@ import Register from "./pages/auth/Register.tsx";
 import Login from "./pages/auth/Login.tsx";
 import ProductDetails from "./pages/products/ProductDetails.tsx";
 import { Provider } from "react-redux";
-import { store } from "./store/index.ts";
+import { persistor, store } from "./store/index.ts";
 import { Toaster } from "sonner";
 import Protect from "./pages/protector/Protect.tsx";
 import Profile from "./pages/Profile.tsx";
@@ -22,6 +22,7 @@ import EditProduct from "./pages/admin/EditProduct.tsx";
 import ProductManagement from "./pages/admin/ProductManagement.tsx";
 import Dashboard from "./pages/admin/Dashboard.tsx";
 import UserManagement from "./pages/admin/UserManagement.tsx";
+import { PersistGate } from "redux-persist/integration/react";
 
 const router = createBrowserRouter([
   {
@@ -100,8 +101,10 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
-      <Toaster richColors />
+      <PersistGate persistor={persistor}>
+        <RouterProvider router={router} />
+        <Toaster richColors />
+      </PersistGate>
     </Provider>
   </StrictMode>
 );

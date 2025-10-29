@@ -1,7 +1,10 @@
 import { X } from "lucide-react";
 import CartItem from "./CartItem";
 import useMediaQuery from "@/hooks/useMediaQuery";
-import { products } from "@/utils/products";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store";
+import { Button } from "../ui/button";
+import { clearCart } from "@/store/slices/cart";
 
 interface CartDrawerProps {
   isCartOpen: boolean;
@@ -9,6 +12,8 @@ interface CartDrawerProps {
 }
 
 function CartDrawer({ isCartOpen, toggleCart }: CartDrawerProps) {
+  const products = useSelector((state: RootState) => state.cart.items);
+  const dispatch = useDispatch();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
@@ -23,22 +28,42 @@ function CartDrawer({ isCartOpen, toggleCart }: CartDrawerProps) {
             <div className="flex justify-end w-full">
               <X onClick={toggleCart} className="cursor-pointer" />
             </div>
-            <h2 className="text-2xl font-bold my-4">Your Cart</h2>
+            <div className="flex items-center justify-between my-2">
+              <h2 className="text-2xl font-bold my-4">Your Cart</h2>
+              {products.length > 2 && (
+                <Button
+                  size={"sm"}
+                  variant={"destructive"}
+                  className="cursor-pointer"
+                  onClick={() => dispatch(clearCart())}
+                >
+                  Clear All
+                </Button>
+              )}
+            </div>
             <div className="max-h-[520px] overflow-scroll scrollbar-hide">
               {products.map((product, index) => (
                 <CartItem
                   key={index}
                   name={product.name}
-                  image={product.images[0].url}
-                  size={product.size[0]}
-                  color={product.colors[0]}
-                  price={product.price}
+                  image={product.image}
+                  size={product.size}
+                  color={product.color}
+                  price={Number(product.price)}
+                  quantity={product.quantity}
+                  productKey={product.key!}
                 />
               ))}
             </div>
-            <button className="absolute bottom-0 right-0 w-full bg-primary py-2 text-white text-center rounded-md cursor-pointer">
-              Go to Checkout
-            </button>
+            {products.length > 0 ? (
+              <button className="absolute bottom-0 right-0 w-full bg-primary py-2 text-white text-center rounded-md cursor-pointer">
+                Go to Checkout
+              </button>
+            ) : (
+              <div>
+                <p>No products in cart.</p>
+              </div>
+            )}
           </div>
         </div>
       )}

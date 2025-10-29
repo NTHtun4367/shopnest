@@ -1,10 +1,13 @@
 import RatingConverter from "@/common/RatingConverter";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { addToCart } from "@/store/slices/cart";
 import { useGetProductDetailsQuery } from "@/store/slices/productApi";
 import type { ProductImage } from "@/types/product";
 import { Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
+import { toast } from "sonner";
 
 function ProductDetails() {
   const [selectedImage, setSelectedImage] = useState<string>();
@@ -12,6 +15,7 @@ function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState<string>();
   const [quantity, setQuantity] = useState<number>(1);
   const { id } = useParams();
+  const dispatch = useDispatch();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const { data: product, isLoading } = useGetProductDetailsQuery(id as string);
@@ -26,6 +30,21 @@ function ProductDetails() {
 
   if (isLoading) return <p>Loading...</p>;
   if (!product) return <p>Product not found.</p>;
+
+  const addToCartHandler = () => {
+    toast.success("Product is added to cart.");
+    dispatch(
+      addToCart({
+        productId: product._id,
+        name: product.name,
+        image: selectedImage,
+        size: selectedSize,
+        color: selectedColor,
+        price: product.price,
+        quantity,
+      })
+    );
+  };
 
   return (
     <section
@@ -121,7 +140,10 @@ function ProductDetails() {
               <Plus className="w-6 h-6 cursor-pointer" />
             </button>
           </div>
-          <button className="w-full bg-primary text-white p-2 rounded-full cursor-pointer">
+          <button
+            className="w-full bg-primary text-white p-2 rounded-full cursor-pointer"
+            onClick={addToCartHandler}
+          >
             Add to Cart
           </button>
         </div>

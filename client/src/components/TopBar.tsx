@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Button } from "@/components/ui/button";
-import { products } from "@/utils/products";
+// import { products } from "@/utils/products";
 import CartItem from "./cart/CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
@@ -37,6 +37,8 @@ interface TopBarProps {
 
 function TopBar({ toggleCart }: TopBarProps) {
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  const products = useSelector((state: RootState) => state.cart.items);
+  const productsInCart = products.length;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [logoutMutation, { isLoading }] = useLogoutMutation();
@@ -70,7 +72,12 @@ function TopBar({ toggleCart }: TopBarProps) {
             </Link>
             <SearchBox />
             <div className="flex items-center gap-4">
-              <ShoppingCart onClick={toggleCart} className="cursor-pointer" />
+              <div className="relative">
+                <ShoppingCart onClick={toggleCart} className="cursor-pointer" />
+                <span className="text-xs text-primary bg-secondary rounded-full w-4 h-4 absolute text-center -top-2 -right-2 font-bold">
+                  {productsInCart}
+                </span>
+              </div>
               {userInfo ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
@@ -126,10 +133,15 @@ function TopBar({ toggleCart }: TopBarProps) {
             <div className="flex items-center gap-2">
               <Drawer>
                 <DrawerTrigger>
-                  <ShoppingCart
-                    onClick={toggleCart}
-                    className="cursor-pointer"
-                  />
+                  <div className="relative">
+                    <ShoppingCart
+                      onClick={toggleCart}
+                      className="cursor-pointer"
+                    />
+                    <span className="text-xs text-primary bg-secondary rounded-full w-4 h-4 absolute text-center p -top-2 -right-2 font-bold">
+                      {productsInCart}
+                    </span>
+                  </div>
                 </DrawerTrigger>
                 <DrawerContent>
                   <DrawerHeader>
@@ -140,15 +152,23 @@ function TopBar({ toggleCart }: TopBarProps) {
                       <CartItem
                         key={index}
                         name={product.name}
-                        image={product.images[0].url}
-                        size={product.size[0]}
-                        color={product.colors[0]}
-                        price={product.price}
+                        image={product.image}
+                        size={product.size}
+                        color={product.color}
+                        price={Number(product.price)}
+                        quantity={product.quantity}
+                        productKey={product.key!}
                       />
                     ))}
                   </div>
                   <DrawerFooter>
-                    <Button className="bg-primary">Go to Checkout</Button>
+                    {products.length > 0 ? (
+                      <Button className="bg-primary">Go to Checkout</Button>
+                    ) : (
+                      <div className="text-center">
+                        <p>No products in cart.</p>
+                      </div>
+                    )}
                   </DrawerFooter>
                 </DrawerContent>
               </Drawer>
