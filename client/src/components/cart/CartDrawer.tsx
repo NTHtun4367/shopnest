@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { Button } from "../ui/button";
 import { clearCart } from "@/store/slices/cart";
+import { useCreateCheckOutSessionMutation } from "@/store/slices/orderApi";
 
 interface CartDrawerProps {
   isCartOpen: boolean;
@@ -15,6 +16,25 @@ function CartDrawer({ isCartOpen, toggleCart }: CartDrawerProps) {
   const products = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const [createCheckOutSession, { isLoading }] =
+    useCreateCheckOutSessionMutation();
+  const bill = products.reduce(
+    (sum, item) => sum + Number(item.price) * item.quantity,
+    0
+  );
+
+  const checkoutHandler = async () => {
+    try {
+      const { url } = await createCheckOutSession({
+        items: products,
+        bill,
+      }).unwrap();
+      window.location.href = url;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -56,7 +76,11 @@ function CartDrawer({ isCartOpen, toggleCart }: CartDrawerProps) {
               ))}
             </div>
             {products.length > 0 ? (
-              <button className="absolute bottom-0 right-0 w-full bg-primary py-2 text-white text-center rounded-md cursor-pointer">
+              <button
+                className="absolute bottom-0 right-0 w-full bg-primary py-2 text-white text-center rounded-md cursor-pointer"
+                onClick={checkoutHandler}
+                disabled={isLoading}
+              >
                 Go to Checkout
               </button>
             ) : (

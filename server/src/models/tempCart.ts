@@ -1,0 +1,21 @@
+import { model, Schema, Types } from "mongoose";
+import { orderItemSchema } from "./order";
+
+const tempCartSchema = new Schema({
+  userId: {
+    type: Types.ObjectId,
+    ref: "User",
+  },
+  items: {
+    type: [orderItemSchema],
+    required: true,
+  },
+  expireAt: {
+    type: Date,
+    default: () => new Date(Date.now() + 30 * 60 * 1000),
+    index: { expires: 0 },
+  },
+});
+
+const TempCart = model("TempCart", tempCartSchema);
+export default TempCart;

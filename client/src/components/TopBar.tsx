@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Button } from "@/components/ui/button";
-// import { products } from "@/utils/products";
 import CartItem from "./cart/CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
@@ -30,6 +29,7 @@ import { clearUserInfo } from "@/store/slices/auth";
 import { useCurrentUserQuery, useLogoutMutation } from "@/store/slices/userApi";
 import { useEffect } from "react";
 import { apiSlice } from "@/store/slices/api";
+import { useCreateCheckOutSessionMutation } from "@/store/slices/orderApi";
 
 interface TopBarProps {
   toggleCart(): void;
@@ -45,6 +45,25 @@ function TopBar({ toggleCart }: TopBarProps) {
   const { data: currentUser, isError } = useCurrentUserQuery();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  const [createCheckOutSession, { isLoading: checkOutLoading }] =
+    useCreateCheckOutSessionMutation();
+  const bill = products.reduce(
+    (sum, item) => sum + Number(item.price) * item.quantity,
+    0
+  );
+
+  const checkoutHandler = async () => {
+    try {
+      const { url } = await createCheckOutSession({
+        items: products,
+        bill,
+      }).unwrap();
+      window.location.href = url;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const logoutHandler = async () => {
     try {
       await logoutMutation({});
@@ -56,11 +75,11 @@ function TopBar({ toggleCart }: TopBarProps) {
   };
 
   useEffect(() => {
-    if (isError) {
+    if (isError || !userInfo) {
       navigate("/");
       dispatch(clearUserInfo());
     }
-  }, [isError]);
+  }, [isError, userInfo]);
 
   return (
     <>
@@ -163,7 +182,13 @@ function TopBar({ toggleCart }: TopBarProps) {
                   </div>
                   <DrawerFooter>
                     {products.length > 0 ? (
-                      <Button className="bg-primary">Go to Checkout</Button>
+                      <Button
+                        className="bg-primary"
+                        onClick={checkoutHandler}
+                        disabled={checkOutLoading}
+                      >
+                        Go to Checkout
+                      </Button>
                     ) : (
                       <div className="text-center">
                         <p>No products in cart.</p>
