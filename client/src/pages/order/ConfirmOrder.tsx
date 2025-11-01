@@ -35,7 +35,7 @@ function ConfirmOrder() {
       <div className="text-center">
         <h2 className="text-3xl font-bold">Thank for your purchase</h2>
         <p className="text-muted-foreground mt-4">
-          We've received your order will ship in 5-7 business dasys.
+          We've received your order will ship in 5-7 business days.
         </p>
       </div>
       <div className="max-w-[500px] mx-auto bg-white text-center px-8 py-4 rounded-lg mt-8 shadow-[6px_6px_10px_6px_rgba(0,_0,_0,_0.1)]">

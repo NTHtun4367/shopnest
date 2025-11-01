@@ -1,4 +1,3 @@
-import { FAKE_ORDERS } from "@/utils/fakeOrder";
 import {
   Card,
   CardContent,
@@ -7,8 +6,20 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Badge } from "../ui/badge";
+import { useGetAllOrdersQuery } from "@/store/slices/orderApi";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 function RecentOrder() {
+  const { data } = useGetAllOrdersQuery(undefined);
+  const recentOrders = data?.slice(0, 5);
+
   return (
     <Card>
       <CardHeader>
@@ -16,38 +27,42 @@ function RecentOrder() {
         <CardDescription>View your recent orders</CardDescription>
       </CardHeader>
       <CardContent>
-        <table className="text-xs">
-          <thead>
-            <tr>
-              <th className="p-2">Order ID</th>
-              <th className="p-2">Customer</th>
-              <th className="p-2">Date</th>
-              <th className="p-2">Status</th>
-              <th className="p-2">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {FAKE_ORDERS.map((order) => (
-              <tr key={order.id}>
-                <td className="p-2 text-center">{order.id}</td>
-                <td className="p-2">{order.customer}</td>
-                <td className="p-2">
-                  {new Date(order.createdAt).toLocaleTimeString()}
-                </td>
-                <td className="p-2">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Customer Email</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {recentOrders?.map((order) => (
+              <TableRow key={order._id}>
+                <TableCell className="font-medium">{order.customer}</TableCell>
+                <TableCell className="text-center">
                   <Badge
-                    variant={
-                      order.status === "cancelled" ? "destructive" : "default"
+                    className={
+                      order.status === "paid"
+                        ? "bg-green-600"
+                        : order.status === "delivered"
+                        ? "bg-gray-600"
+                        : order.status === "pending"
+                        ? "bg-yellow-600"
+                        : order.status === "cancelled"
+                        ? "bg-red-600"
+                        : "bg-primary"
                     }
                   >
                     {order.status}
                   </Badge>
-                </td>
-                <td className="p-2">${order.bill.toFixed(2)}</td>
-              </tr>
+                </TableCell>
+                <TableCell className="text-right">
+                  ${order.bill.toFixed(2)}
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

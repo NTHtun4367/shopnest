@@ -26,8 +26,7 @@ app.use(
 
 app.use(cookieParser());
 
-const endpointSecret =
-  "whsec_e3aad632932d64e53ea3a04323f9b6649584aa88406d8d31b47dc319e9b6245e";
+const endpointSecret = process.env.WEBHOOK_SECRET;
 
 app.post(
   "/stripe/webhook",

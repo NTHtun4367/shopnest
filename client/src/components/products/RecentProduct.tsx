@@ -12,7 +12,7 @@ function RecentProduct({ data }: RecentProductProps) {
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    .slice(0, 4);
+    .slice(0, 5);
 
   return (
     <Card>
@@ -21,7 +21,7 @@ function RecentProduct({ data }: RecentProductProps) {
       </CardHeader>
       <CardContent>
         {recentProducts.map((product) => (
-          <div className="flex items-center justify-between shadow p-2 my-2 rounded-lg">
+          <div className="flex items-center justify-between shadow p-2 my-3 rounded-lg">
             <h2 className="text-sm font-medium">{product.name}</h2>
             <Badge>{product.category}</Badge>
           </div>

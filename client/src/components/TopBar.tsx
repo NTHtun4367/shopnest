@@ -91,12 +91,17 @@ function TopBar({ toggleCart }: TopBarProps) {
             </Link>
             <SearchBox />
             <div className="flex items-center gap-4">
-              <div className="relative">
-                <ShoppingCart onClick={toggleCart} className="cursor-pointer" />
-                <span className="text-xs text-primary bg-secondary rounded-full w-4 h-4 absolute text-center -top-2 -right-2 font-bold">
-                  {productsInCart}
-                </span>
-              </div>
+              {currentUser?.role === "customer" && (
+                <div className="relative">
+                  <ShoppingCart
+                    onClick={toggleCart}
+                    className="cursor-pointer"
+                  />
+                  <span className="text-xs text-primary bg-secondary rounded-full w-4 h-4 absolute text-center -top-2 -right-2 font-bold">
+                    {productsInCart}
+                  </span>
+                </div>
+              )}
               {userInfo ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
@@ -110,6 +115,13 @@ function TopBar({ toggleCart }: TopBarProps) {
                         Profile
                       </DropdownMenuItem>
                     </Link>
+                    {currentUser?.role === "customer" && (
+                      <Link to={"/orders"}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          Orders
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
                     <DropdownMenuItem
                       className="cursor-pointer"
                       onClick={logoutHandler}
@@ -150,53 +162,55 @@ function TopBar({ toggleCart }: TopBarProps) {
               SHOPNEST
             </Link>
             <div className="flex items-center gap-2">
-              <Drawer>
-                <DrawerTrigger>
-                  <div className="relative">
-                    <ShoppingCart
-                      onClick={toggleCart}
-                      className="cursor-pointer"
-                    />
-                    <span className="text-xs text-primary bg-secondary rounded-full w-4 h-4 absolute text-center p -top-2 -right-2 font-bold">
-                      {productsInCart}
-                    </span>
-                  </div>
-                </DrawerTrigger>
-                <DrawerContent>
-                  <DrawerHeader>
-                    <DrawerTitle>YOUR CARTS</DrawerTitle>
-                  </DrawerHeader>
-                  <div className="max-h-[300px] mx-6 overflow-scroll scrollbar-hide">
-                    {products.map((product, index) => (
-                      <CartItem
-                        key={index}
-                        name={product.name}
-                        image={product.image}
-                        size={product.size}
-                        color={product.color}
-                        price={Number(product.price)}
-                        quantity={product.quantity}
-                        productKey={product.key!}
+              {currentUser?.role === "customer" && (
+                <Drawer>
+                  <DrawerTrigger>
+                    <div className="relative">
+                      <ShoppingCart
+                        onClick={toggleCart}
+                        className="cursor-pointer"
                       />
-                    ))}
-                  </div>
-                  <DrawerFooter>
-                    {products.length > 0 ? (
-                      <Button
-                        className="bg-primary"
-                        onClick={checkoutHandler}
-                        disabled={checkOutLoading}
-                      >
-                        Go to Checkout
-                      </Button>
-                    ) : (
-                      <div className="text-center">
-                        <p>No products in cart.</p>
-                      </div>
-                    )}
-                  </DrawerFooter>
-                </DrawerContent>
-              </Drawer>
+                      <span className="text-xs text-primary bg-secondary rounded-full w-4 h-4 absolute text-center p -top-2 -right-2 font-bold">
+                        {productsInCart}
+                      </span>
+                    </div>
+                  </DrawerTrigger>
+                  <DrawerContent>
+                    <DrawerHeader>
+                      <DrawerTitle>YOUR CARTS</DrawerTitle>
+                    </DrawerHeader>
+                    <div className="max-h-[300px] mx-6 overflow-scroll scrollbar-hide">
+                      {products.map((product, index) => (
+                        <CartItem
+                          key={index}
+                          name={product.name}
+                          image={product.image}
+                          size={product.size}
+                          color={product.color}
+                          price={Number(product.price)}
+                          quantity={product.quantity}
+                          productKey={product.key!}
+                        />
+                      ))}
+                    </div>
+                    <DrawerFooter>
+                      {products.length > 0 ? (
+                        <Button
+                          className="bg-primary"
+                          onClick={checkoutHandler}
+                          disabled={checkOutLoading}
+                        >
+                          Go to Checkout
+                        </Button>
+                      ) : (
+                        <div className="text-center">
+                          <p>No products in cart.</p>
+                        </div>
+                      )}
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+              )}
               {userInfo ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
@@ -210,6 +224,13 @@ function TopBar({ toggleCart }: TopBarProps) {
                         Profile
                       </DropdownMenuItem>
                     </Link>
+                    {currentUser?.role === "customer" && (
+                      <Link to={"/orders"}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          Orders
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
                     <DropdownMenuItem
                       className="cursor-pointer"
                       onClick={logoutHandler}
