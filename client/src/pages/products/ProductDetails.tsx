@@ -80,7 +80,7 @@ function ProductDetails() {
           ))}
         </div>
       </div>
-      <div className={`${isDesktop ? "w-3/5 ps-8" : "w-full px-6 pt-4"}`}>
+      <div className={`${isDesktop ? "w-3/5 ps-8 product-container" : "w-full px-6 pt-4"}`}>
         <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
         <RatingConverter count={product.rating_count} />
         <div dangerouslySetInnerHTML={{ __html: product.description }} />

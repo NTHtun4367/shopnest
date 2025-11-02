@@ -111,16 +111,19 @@ function ProductFilter() {
       <div className="col-span-2">
         <h2 className="text-xl font-bold mb-2">Product Filters</h2>
         <h3 className="text-lg font-bold mb-2">Colors</h3>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           {product_meta?.colors.map((color, index) => (
-            <label key={index}>
+            <label key={index} className="flex items-center">
               <input
                 type="checkbox"
                 className="mr-1"
                 onChange={() => toggleValue("colors", color)}
                 checked={filters.colors.includes(color)}
               />
-              <span className="text-sm">{color}</span>
+              <div
+                className="w-14 h-3 border border-gray-600 rounded-xs"
+                style={{ backgroundColor: color }}
+              />
             </label>
           ))}
         </div>
@@ -180,7 +183,7 @@ function ProductFilter() {
                 image={product.images[0].url}
                 name={product.name}
                 price={product.price}
-                ratingCount={product.rating}
+                ratingCount={product.rating_count}
                 key={index}
               />
             ))}

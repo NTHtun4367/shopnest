@@ -146,3 +146,7 @@
 .ProseMirror {
   outline: none !important;
 }
+
+.product-container ul {
+  @apply list-disc ml-8 mt-4;
+}

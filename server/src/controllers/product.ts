@@ -224,7 +224,8 @@ export const getProductWithFilters = asyncHandler(async (req, res) => {
 
   if (color) {
     const colors = Array.isArray(color) ? color : [color];
-    query.colors = { $in: colors };
+    const normalized = colors.map((c) => String(c).replace(/^#/, ""));
+    query.colors = { $in: normalized };
   }
 
   if (size) {
