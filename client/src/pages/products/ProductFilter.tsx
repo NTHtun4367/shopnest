@@ -1,10 +1,13 @@
 import ProductCard from "@/components/products/ProductCard";
+import ProductFilterDropDown from "@/components/products/ProductFilterDropDown";
 import { Button } from "@/components/ui/button";
+import useMediaQuery from "@/hooks/useMediaQuery";
 import {
   useGetProductsMetaQuery,
   useGetProductsQuery,
 } from "@/store/slices/productApi";
 import type { Product, ProductFilters } from "@/types/product";
+import { SlidersHorizontal } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
@@ -106,77 +109,125 @@ function ProductFilter() {
     );
   }, [filters]);
 
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  // const gridMedia = isDesktop
+  //   ? "grid grid-cols-5 gap-6"
+  //   : "grid grid-cols-2 mx-6 gap-2";
+
   return (
-    <section className="grid grid-cols-12 mt-12">
-      <div className="col-span-2">
-        <h2 className="text-xl font-bold mb-2">Product Filters</h2>
-        <h3 className="text-lg font-bold mb-2">Colors</h3>
-        <div className="flex flex-col gap-2">
-          {product_meta?.colors.map((color, index) => (
-            <label key={index} className="flex items-center">
-              <input
-                type="checkbox"
-                className="mr-1"
-                onChange={() => toggleValue("colors", color)}
-                checked={filters.colors.includes(color)}
-              />
-              <div
-                className="w-14 h-3 border border-gray-600 rounded-xs"
-                style={{ backgroundColor: color }}
-              />
-            </label>
-          ))}
-        </div>
-
-        <h3 className="text-lg font-bold mb-2 mt-4">Sizes</h3>
-        <div className="flex flex-col gap-1">
-          {product_meta?.sizes.map((size, index) => (
-            <label key={index}>
-              <input
-                type="checkbox"
-                className="mr-1"
-                onChange={() => toggleValue("sizes", size)}
-                checked={filters.sizes.includes(size)}
-              />
-              <span className="text-sm">{size}</span>
-            </label>
-          ))}
-        </div>
-
-        <h3 className="text-lg font-bold mb-2 mt-4">Sizes</h3>
-        <input
-          type="number"
-          min={0}
-          placeholder={`Min (${product_meta?.minPrice})`}
-          className="w-[150px] border-2 p-1 rounded-sm mb-2"
-          value={filters.minPrice!}
-          onChange={(e) => handlePriceChange("minPrice", e.target.value)}
-        />
-        <input
-          type="number"
-          min={product_meta?.minPrice}
-          placeholder={`Max (${product_meta?.maxPrice})`}
-          className="w-[150px] border-2 p-1 rounded-sm"
-          value={filters.maxPrice!}
-          onChange={(e) => handlePriceChange("maxPrice", e.target.value)}
-        />
-        {hasActiveFilters && (
-          <Button
-            variant={"destructive"}
-            onClick={clearAllFilters}
-            className="w-[150px] mt-2 cursor-pointer"
-          >
-            Clear All
-          </Button>
+    <section
+      className={isDesktop ? "grid grid-cols-12 mt-12" : "w-full px-6 mt-6"}
+    >
+      <div className={isDesktop ? "col-span-2" : ""}>
+        <h2
+          className={isDesktop ? "text-xl font-bold mb-2" : "text-lg font-bold"}
+        >
+          Product Filters
+        </h2>
+        {isDesktop ? (
+          <>
+            <h3 className="text-lg font-bold mb-2">Colors</h3>
+            <div className="flex flex-col gap-2">
+              {product_meta?.colors.map((color, index) => (
+                <label key={index} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    className="mr-1"
+                    onChange={() => toggleValue("colors", color)}
+                    checked={filters.colors.includes(color)}
+                  />
+                  <div
+                    className="w-14 h-3 border border-gray-600 rounded-xs"
+                    style={{ backgroundColor: color }}
+                  />
+                </label>
+              ))}
+            </div>
+            <h3 className="text-lg font-bold mb-2 mt-4">Sizes</h3>
+            <div className="flex flex-col gap-1">
+              {product_meta?.sizes.map((size, index) => (
+                <label key={index}>
+                  <input
+                    type="checkbox"
+                    className="mr-1"
+                    onChange={() => toggleValue("sizes", size)}
+                    checked={filters.sizes.includes(size)}
+                  />
+                  <span className="text-sm">{size}</span>
+                </label>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="flex items-center gap-2 mt-2">
+            <SlidersHorizontal className="w-12 h-12" />
+            <ProductFilterDropDown
+              type="colors"
+              product_meta={product_meta!}
+              filters={filters}
+              toggleValue={toggleValue}
+            />
+            <ProductFilterDropDown
+              type="sizes"
+              product_meta={product_meta!}
+              filters={filters}
+              toggleValue={toggleValue}
+            />
+          </div>
         )}
+
+        {isDesktop && <h3 className="text-lg font-bold mb-2 mt-4">Sizes</h3>}
+        <div className={isDesktop ? "" : "flex items-center gap-2 my-2"}>
+          <input
+            type="number"
+            min={0}
+            placeholder={`Min (${product_meta?.minPrice})`}
+            className={
+              isDesktop
+                ? "w-[150px] border-2 p-1 rounded-sm mb-2"
+                : "w-full border p-1 rounded-md"
+            }
+            value={filters.minPrice!}
+            onChange={(e) => handlePriceChange("minPrice", e.target.value)}
+          />
+          <input
+            type="number"
+            min={product_meta?.minPrice}
+            placeholder={`Max (${product_meta?.maxPrice})`}
+            className={
+              isDesktop
+                ? "w-[150px] border-2 p-1 rounded-sm"
+                : "w-full border p-1 rounded-md"
+            }
+            value={filters.maxPrice!}
+            onChange={(e) => handlePriceChange("maxPrice", e.target.value)}
+          />
+          {hasActiveFilters && (
+            <Button
+              size={"sm"}
+              variant={"destructive"}
+              onClick={clearAllFilters}
+              className={
+                isDesktop ? "w-[150px] mt-2 cursor-pointer" : "cursor-pointer"
+              }
+            >
+              Clear All
+            </Button>
+          )}
+        </div>
       </div>
-      <div className="col-span-10">
+      <div className={isDesktop ? "col-span-10" : ""}>
         {isLoading ? (
           <p>Loading...</p>
         ) : products.length === 0 ? (
           <p>No products found.</p>
         ) : (
-          <div className="grid grid-cols-4 gap-6">
+          <div
+            className={
+              isDesktop ? "grid grid-cols-4 gap-6" : "grid grid-cols-2 gap-2"
+            }
+          >
             {products.map((product, index) => (
               <ProductCard
                 _id={product._id}
