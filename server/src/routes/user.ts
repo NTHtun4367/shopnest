@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  changeUserStatus,
+  getAllUsersInfo,
   getUserInfo,
   loginUser,
   logoutUser,
@@ -11,7 +13,7 @@ import {
   updatePassword,
   uploadAvatar,
 } from "../controllers/user";
-import { protect } from "../middlewares/authMiddleware";
+import { isAdmin, protect } from "../middlewares/authMiddleware";
 import {
   emailUpdateValidator,
   loginValidator,
@@ -21,6 +23,8 @@ import {
   passwordUpdateValidator,
   registerValidator,
   uploadImageAvatarValidator,
+  userIdValidator,
+  userStatusValidator,
 } from "../validators/user";
 import { validateRequest } from "../middlewares/validateRequest";
 
@@ -70,6 +74,15 @@ router.post(
   passwordChangeValidator,
   validateRequest,
   resetPassword
+);
+router.get("/users/all", protect, isAdmin, getAllUsersInfo);
+router.patch(
+  "/users/:userId",
+  protect,
+  isAdmin,
+  userIdValidator,
+  userStatusValidator,
+  changeUserStatus
 );
 
 export default router;

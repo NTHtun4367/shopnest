@@ -12,11 +12,11 @@
 }
 
 .primary-bg {
-  @apply bg-[#292526];
+  @apply bg-primary;
 }
 
 .secondary-bg {
-  @apply bg-[#787676];
+  @apply bg-[#787676cf];
 }
 
 .scrollbar-hide {

@@ -40,6 +40,7 @@ function OrderTablePage() {
           </TableRow>
         </TableHeader>
         <TableBody>
+          {data?.length === 0 && <p className="p-4">No orders found.</p>}
           {data?.map((order) => (
             <TableRow key={order._id}>
               <TableCell className="font-medium">INV - {order._id}</TableCell>

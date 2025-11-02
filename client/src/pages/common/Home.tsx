@@ -2,7 +2,7 @@ import {
   useGetFeaturedQuery,
   useGetNewArrivalsQuery,
 } from "@/store/slices/productApi";
-import ProductList from "../components/products/ProductList";
+import ProductList from "@/components/products/ProductList";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 

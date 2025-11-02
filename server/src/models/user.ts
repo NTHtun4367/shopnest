@@ -7,6 +7,7 @@ interface IUser extends Document {
   email: string;
   password: string;
   role: "customer" | "admin";
+  status: "active" | "ban";
   avatar?: {
     url: string;
     public_alt: string;
@@ -36,6 +37,11 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ["customer", "admin"],
       default: "customer",
+    },
+    status: {
+      type: String,
+      enum: ["active", "ban"],
+      default: "active",
     },
     avatar: {
       type: [

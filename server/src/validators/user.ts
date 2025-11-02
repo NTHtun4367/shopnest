@@ -46,3 +46,11 @@ export const passwordChangeValidator = [
     .isLength({ min: 6 })
     .withMessage("New password must be at least 6 characters."),
 ];
+
+export const userIdValidator = [
+  param("userId").isMongoId().withMessage("Invalid user id."),
+];
+
+export const userStatusValidator = [
+  body("status").isIn(["active", "ban"]).withMessage("Invalid user status."),
+];

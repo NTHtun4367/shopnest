@@ -115,6 +115,18 @@ export const userApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
+    getAllUsers: builder.query<User[], undefined>({
+      query: () => "/users/all",
+      providesTags: ["User"],
+    }),
+    changeUserStatus: builder.mutation({
+      query: ({ userId, status }) => ({
+        url: `/users/${userId}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -129,4 +141,6 @@ export const {
   usePasswordUpdateMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useGetAllUsersQuery,
+  useChangeUserStatusMutation,
 } = userApiSlice;

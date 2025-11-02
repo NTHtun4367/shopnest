@@ -43,6 +43,11 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const existingUser = await User.findOne({ email });
 
   if (existingUser && (await existingUser.matchPassword(password))) {
+    if (existingUser.status === "ban") {
+      res.status(401);
+      throw new Error("Your account has been banned.");
+    }
+
     generateToken(res, existingUser._id);
     res.status(200).json({
       _id: existingUser._id,
@@ -225,5 +230,37 @@ export const resetPassword = asyncHandler(
     await user.save();
 
     res.status(200).json({ message: "Password changed." });
+  }
+);
+
+// @route GET | /api/users/all
+// @desc Get all users
+// @access Private | Admin
+export const getAllUsersInfo = asyncHandler(
+  async (req: Request, res: Response) => {
+    const users = await User.find({ role: "customer" }).sort({ createdAt: -1 });
+    res.status(200).json(users);
+  }
+);
+
+// @route PATCH | /api/users/:userId
+// @desc Change user status
+// @access Private | Admin
+export const changeUserStatus = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const { status } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      throw new Error("User not found!");
+    }
+
+    res.status(200).json(updatedUser);
   }
 );
