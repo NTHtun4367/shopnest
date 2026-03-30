@@ -59,7 +59,7 @@ function ConfirmOrder() {
           <Link to={"/"}>Go to HomePage</Link>
         </Button>
         <Button asChild>
-          <Link to={"/profile/orders"}>Go to OrderPage</Link>
+          <Link to={"/orders"}>Go to OrderPage</Link>
         </Button>
       </div>
     </div>

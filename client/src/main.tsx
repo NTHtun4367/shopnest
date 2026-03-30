@@ -38,22 +38,6 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
-      },
-      {
-        path: "/reset-password/:id",
-        element: <ResetPassword />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
         path: "/products/:id",
         element: <ProductDetails />,
       },
@@ -117,6 +101,22 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password/:id",
+    element: <ResetPassword />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
 ]);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -126,5 +126,5 @@ createRoot(document.getElementById("root")!).render(
         <Toaster richColors />
       </PersistGate>
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );

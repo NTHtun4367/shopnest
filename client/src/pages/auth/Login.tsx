@@ -61,57 +61,83 @@ function Login() {
   }, [navigate, userInfo]);
 
   return (
-    <div className="max-w-[450px] lg:mx-auto mx-6 my-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-center">SHOPNEST</CardTitle>
-          <CardDescription className="text-center">
-            Enter your information to login
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="example@gmail.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="mb-2">
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input placeholder="******" {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Link to={"/forgot-password"} className="text-xs font-medium underline">Forgot password?</Link>
-              <Button type="submit" className="w-full mt-2" disabled={isLoading}>
-                Login
-              </Button>
-            </form>
-          </Form>
-          <p className="text-xs text-center font-medium mt-4">
-            Don't have an account?
-            <Link to={"/register"} className="underline ps-1">
-              Register
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
+    /* Center the container vertically and horizontally */
+    <div className="min-h-[80vh] flex flex-col justify-center items-center px-6">
+      <div className="w-full max-w-[450px]">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center text-3xl font-bold italic">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
+                SHOPNEST
+              </Link>
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter your information to login
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="example@gmail.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="mb-2">
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="******"
+                          {...field}
+                          type="password"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Link
+                  to={"/forgot-password"}
+                  className="text-xs font-medium underline hover:text-primary transition-colors"
+                >
+                  Forgot password?
+                </Link>
+                <Button
+                  type="submit"
+                  className="w-full mt-2 cursor-pointer"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Logging in..." : "Login"}
+                </Button>
+              </form>
+            </Form>
+            <p className="text-xs text-center font-medium mt-4">
+              Don't have an account?
+              <Link
+                to={"/register"}
+                className="underline ps-1 hover:text-primary transition-colors"
+              >
+                Register
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

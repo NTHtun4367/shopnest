@@ -10,7 +10,7 @@ function ProductList({ products }: ProductListProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const gridMedia = isDesktop
-    ? "grid grid-cols-5 gap-6"
+    ? "grid grid-cols-4 gap-6"
     : "grid grid-cols-2 mx-6 gap-2";
 
   return (

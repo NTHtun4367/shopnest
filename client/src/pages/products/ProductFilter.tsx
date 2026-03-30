@@ -1,3 +1,4 @@
+import ProductSkeleton from "@/common/ProductSkeleton";
 import ProductCard from "@/components/products/ProductCard";
 import ProductFilterDropDown from "@/components/products/ProductFilterDropDown";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ function ProductFilter() {
       const timeOutId = setTimeout(() => {
         navigate(
           { pathname: "/products/filter", search: newSearchQuery },
-          { replace: true }
+          { replace: true },
         );
       }, 100);
 
@@ -111,13 +112,11 @@ function ProductFilter() {
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  // const gridMedia = isDesktop
-  //   ? "grid grid-cols-5 gap-6"
-  //   : "grid grid-cols-2 mx-6 gap-2";
-
   return (
     <section
-      className={isDesktop ? "grid grid-cols-12 mt-12" : "w-full px-6 mt-6"}
+      className={
+        isDesktop ? "grid grid-cols-12 mt-12 px-6" : "w-full px-6 mt-6"
+      }
     >
       <div className={isDesktop ? "col-span-2" : ""}>
         <h2
@@ -138,7 +137,7 @@ function ProductFilter() {
                     checked={filters.colors.includes(color)}
                   />
                   <div
-                    className="w-14 h-3 border border-gray-600 rounded-xs"
+                    className="w-14 h-3 border border-gray-600 rounded-sm"
                     style={{ backgroundColor: color }}
                   />
                 </label>
@@ -177,7 +176,7 @@ function ProductFilter() {
           </div>
         )}
 
-        {isDesktop && <h3 className="text-lg font-bold mb-2 mt-4">Sizes</h3>}
+        {isDesktop && <h3 className="text-lg font-bold mb-2 mt-4">Price</h3>}
         <div className={isDesktop ? "" : "flex items-center gap-2 my-2"}>
           <input
             type="number"
@@ -217,11 +216,11 @@ function ProductFilter() {
           )}
         </div>
       </div>
-      <div className={isDesktop ? "col-span-10" : ""}>
+      <div className={isDesktop ? "col-span-10 px-4" : ""}>
         {isLoading ? (
-          <p>Loading...</p>
+          <ProductSkeleton size={8} />
         ) : products.length === 0 ? (
-          <p>No products found.</p>
+          <p className="text-center py-10 text-gray-500">No products found.</p>
         ) : (
           <div
             className={
